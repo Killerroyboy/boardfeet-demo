@@ -632,7 +632,7 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 
 <div class="toast" id="toast"></div>
 
-<footer>BOARDFEET demo build v5 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+<footer>BOARDFEET demo build v6 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
 
 <script>
 "use strict";
@@ -655,7 +655,9 @@ let _id = 0;
 
 function addSku(o){
   o.id = _id++;
-  o.base = o.price;
+  // seed a realistic 24h move: base is where the SKU was ~24h ago
+  const dev = rr(-0.032, 0.035);
+  o.base = o.unit==="$/LF" ? +(o.price/(1+dev)).toFixed(2) : Math.round(o.price/(1+dev));
   o.prev = o.price;
   o.prints = ri(2,38);
   o.lastTs = Date.now() - ri(0, 6*3600*1000);
