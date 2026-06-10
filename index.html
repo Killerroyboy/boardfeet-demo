@@ -271,6 +271,50 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 .tier li::before{content:"—";position:absolute;left:0;color:var(--crayon)}
 
 
+/* ===== Drivers tab ===== */
+.drv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px;margin-bottom:12px}
+.drv{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 13px;border-top:3px solid var(--line)}
+.drv.bull{border-top-color:var(--up)}.drv.bear{border-top-color:var(--down)}.drv.watch{border-top-color:var(--crayon)}
+.drv .k{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.drv .v{font-family:var(--mono);font-size:19px;font-weight:800;margin-top:3px}
+.drv .d{font-size:10.5px;color:var(--ink-soft);margin-top:3px;line-height:1.45}
+.drv .imp{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:3px;margin-top:6px;text-transform:uppercase}
+.imp-bull{background:var(--up-bg);color:var(--up)}.imp-bear{background:var(--down-bg);color:var(--down)}.imp-watch{background:#FBEAD6;color:#B25A08}
+.fc-table{width:100%;border-collapse:collapse;font-size:12px}
+.fc-table th{text-align:right;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);padding:6px 8px;border-bottom:1px solid var(--line)}
+.fc-table th:first-child,.fc-table td:first-child{text-align:left}
+.fc-table td{padding:8px;border-bottom:1px solid #F0F0E8;font-family:var(--mono);text-align:right}
+.fc-dir{font-weight:800}
+.score-banner{display:flex;gap:14px;align-items:center;background:var(--spruce);border-radius:8px;padding:13px 16px;margin-bottom:10px;color:#DDE6D8;flex-wrap:wrap}
+.score-banner .big{font-family:var(--mono);font-size:25px;font-weight:800;color:#fff}
+.score-banner .big span{color:var(--crayon)}
+.score-banner .lbl{font-size:11px;line-height:1.5}
+.hedge-out{display:none;margin-top:12px;background:#F6F6F1;border-radius:7px;padding:13px;font-size:12.5px;line-height:1.7}
+.hedge-out.show{display:block}
+.hedge-out b{font-family:var(--mono)}
+.fv-line{display:flex;justify-content:space-between;align-items:center;background:#F6F6F1;border-radius:6px;padding:9px 11px;margin-bottom:8px;font-size:12px}
+.fv-line .fv-val{font-family:var(--mono);font-weight:700}
+.fv-badge{font-size:8.5px;font-weight:800;letter-spacing:.07em;padding:2px 6px;border-radius:3px;text-transform:uppercase}
+.fv-mod{background:#E4E9F5;color:#3D5A99}.fv-prn{background:var(--up-bg);color:var(--up)}
+.chat-li{padding:8px 0;border-bottom:1px solid #F0F0E8;font-size:12px;line-height:1.45}
+.chat-li .who{font-family:var(--mono);font-size:10px;color:var(--ink-soft)}
+.share-btn{margin:0 18px 10px;width:calc(100% - 36px);padding:11px;background:#fff;color:var(--spruce);border:1.5px solid var(--spruce);border-radius:7px;font-size:13.5px;font-weight:700}
+.share-btn:hover{background:#F0F4F0}
+.share-modal{position:fixed;inset:0;z-index:75;display:none;align-items:center;justify-content:center;padding:16px}
+.share-modal.open{display:flex}
+.share-modal .m-scrim{position:absolute;inset:0;background:rgba(26,32,24,.6)}
+.share-card-wrap{position:relative;text-align:center}
+.share-card-wrap canvas{max-width:min(360px,88vw);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.share-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.share-actions button,.share-actions a{padding:10px 18px;border-radius:7px;font-size:13px;font-weight:700;border:none;text-decoration:none;display:inline-block;cursor:pointer}
+.share-dl{background:var(--crayon);color:#fff}
+.share-x{background:#fff;color:var(--ink)}
+.phone{max-width:290px;margin:0 auto;background:#111;border-radius:22px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.phone .scr{background:#F2F2F7;border-radius:14px;padding:12px 10px;font-size:11.5px}
+.phone .bub{background:#E9E9EB;border-radius:12px;padding:9px 11px;line-height:1.5;color:#111}
+.phone .bub b{font-weight:700}
+.phone .tm{text-align:center;font-size:9px;color:#8E8E93;margin-bottom:7px}
+
 #printReport{display:none}
 @media print{
   body > *:not(#printReport){display:none !important}
@@ -312,6 +356,7 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
   <button class="tab on" data-view="board">Market Board</button>
   <button class="tab" data-view="buyer">Buyer View</button>
   <button class="tab" data-view="seller">Seller View</button>
+  <button class="tab" data-view="drivers">Drivers</button>
   <button class="tab" data-view="platform">Platform</button>
   <button class="print-btn" id="printBtn">
     <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2.5" y="1" width="8" height="3.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4.5" width="11" height="5" stroke="currentColor" stroke-width="1.4"/><rect x="3" y="8" width="7" height="4" fill="#fff" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -392,6 +437,53 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
     </div>
   </section>
 
+  <!-- ============ DRIVERS PANEL ============ -->
+  <section class="panel" id="panel-drivers">
+    <div class="score-banner">
+      <div><div class="big">78<span>%</span></div><div class="lbl">1-week directional<br>forecast hit rate</div></div>
+      <div><div class="big">64<span>%</span></div><div class="lbl">4-week directional<br>forecast hit rate</div></div>
+      <div class="lbl" style="margin-left:auto;max-width:300px">Every forecast we publish is graded publicly against what the market actually did. The scoreboard never resets and never hides a miss.</div>
+    </div>
+
+    <div class="tool">
+      <h2>What's moving the market</h2>
+      <p class="sub">Live prices connected to the forces behind them. Each driver is scored bullish, bearish, or watch for framing lumber.</p>
+      <div class="drv-grid">
+        <div class="drv bear"><div class="k">Canadian duties</div><div class="v">35–45%</div><div class="d">Combined AD/CVD deposit rates at peak; Canada's US share squeezed to 18.6%</div><span class="imp imp-bull">Bullish supply</span></div>
+        <div class="drv bull"><div class="k">Mill curtailments</div><div class="v">4.3 BBF</div><div class="d">Permanent capacity removed 2024–25; supply discipline holding into 2026</div><span class="imp imp-bull">Bullish</span></div>
+        <div class="drv watch"><div class="k">Housing starts</div><div class="v">1.38M</div><div class="d">SAAR, trailing; single-family flat, multifamily soft</div><span class="imp imp-watch">Watch</span></div>
+        <div class="drv watch"><div class="k">30-yr mortgage</div><div class="v">6.4%</div><div class="d">Rate path is the demand swing factor for H2</div><span class="imp imp-watch">Watch</span></div>
+        <div class="drv bear"><div class="k">Field inventories</div><div class="v">Lean</div><div class="d">Dealers hand-to-mouth; restocking cycle would amplify any rally</div><span class="imp imp-bull">Coiled spring</span></div>
+        <div class="drv watch"><div class="k">Wildfire / beetle</div><div class="v">Elevated</div><div class="d">BC interior fire outlook above normal; watch July–Sept harvest access</div><span class="imp imp-watch">Supply risk</span></div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <h2>Forecast scoreboard — graded in public</h2>
+      <p class="sub">Directional calls per composite, 1-week and 4-week, with the running record.</p>
+      <table class="fc-table"><thead><tr><th>Composite</th><th>1-wk call</th><th>4-wk call</th><th>Last 12 calls</th></tr></thead>
+      <tbody id="fcBody"></tbody></table>
+    </div>
+
+    <div class="tool">
+      <h2>Cash vs futures basis</h2>
+      <p class="sub">CME lumber futures (LBR · 27,500 bf, RL #2&amp;Btr 2x4 basis) against the live cash board.</p>
+      <table class="fc-table"><thead><tr><th>Contract</th><th>Futures</th><th>Cash equiv</th><th>Basis</th></tr></thead>
+      <tbody id="basisFut"></tbody></table>
+    </div>
+
+    <div class="tool">
+      <h2>Hedge calculator — for yards that have never hedged</h2>
+      <p class="sub">Carrying inventory into a falling market is an unhedged short. See what one contract does.</p>
+      <div class="tool-row">
+        <input id="hgTl" type="number" inputmode="numeric" placeholder="Truckloads in inventory" style="flex:1;min-width:150px">
+        <input id="hgCost" type="number" inputmode="decimal" placeholder="Avg cost $/MBF" style="flex:1;min-width:130px">
+        <button class="tool-go" id="hgGo">Run it</button>
+      </div>
+      <div class="hedge-out" id="hgOut"></div>
+    </div>
+  </section>
+
   <!-- ============ PLATFORM PANEL ============ -->
   <section class="panel" id="panel-platform">
     <div class="plat-grid">
@@ -439,6 +531,15 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 
 <span class="o">→ tap "Run request" for a live response</span></div>
         <button class="tool-go api-run" id="apiRun">Run request</button>
+      </div>
+
+      <div class="tool">
+        <h2>7am digest — for the desk that never opens an app</h2>
+        <p class="sub">Watchlist moves and one market call, by text or email, every morning. The product habit for the trader who runs the desk by phone.</p>
+        <div class="phone"><div class="scr">
+          <div class="tm">Today 7:00 AM</div>
+          <div class="bub"><b>BOARDFEET 7am</b> — Framing comp $447 ▲$6, 7th straight wk. Your watchlist: 2x6 #2 DF Green PNW $612 ▲1.9% · OSB 7/16 SoCal $388 ▼0.8% · Studs flat. Call: HOLD, inquiry flow firm but order files stretched. Reply STOP to end, BOARD for full report.</div>
+        </div></div>
       </div>
 
       <div class="tool" style="grid-column:1/-1">
@@ -518,9 +619,20 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
   </div>
 </div>
 
+<div class="share-modal" id="shareModal">
+  <div class="m-scrim" id="shScrim"></div>
+  <div class="share-card-wrap">
+    <canvas id="shCanvas" width="720" height="900"></canvas>
+    <div class="share-actions">
+      <a class="share-dl" id="shDl" download="boardfeet-price-card.png">Save image</a>
+      <button class="share-x" id="shClose">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<footer>BOARDFEET demo build v4 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+<footer>BOARDFEET demo build v5 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
 
 <script>
 "use strict";
@@ -910,6 +1022,8 @@ function openDrawer(k){
     </div>
     <div class="dw-chart">${bigChart(k)}</div>
     <div class="dw-sect">
+      <div class="fv-line"><span>Fair value estimate <span class="fv-badge ${k.prints>=8?"fv-prn":"fv-mod"}">${k.prints>=8?"Printed":"Modeled"}</span></span><span class="fv-val">${fmt(k, k.price*rr(0.995,1.005))} ± ${k.unit==="$/LF"?"$0.20":"$"+Math.round(k.price*0.018)}</span></div>
+      <div class="fv-line"><span>vs 5-yr seasonal average (wk ${Math.ceil((Date.now()-new Date(new Date().getFullYear(),0,1))/604800000)})</span><span class="fv-val" style="color:var(--${chgPct(k)>=0?"up":"down"})">${chgPct(k)>=0?"+":""}${(chgPct(k)*2.1).toFixed(1)}%</span></div>
       <div class="stat-grid">
         <div class="stat"><div class="k">24h High</div><div class="v">${fmt(k,Math.max(...d))}</div></div>
         <div class="stat"><div class="k">24h Low</div><div class="v">${fmt(k,Math.min(...d))}</div></div>
@@ -920,11 +1034,17 @@ function openDrawer(k){
       <h3>Recent prints — anonymized</h3>
       ${fakePrints(k).map(p=>`<div class="print-li"><span>${fmt(k,p.p)} <span class="who">· ${p.qty}</span></span><span class="who">${p.who} · ${ago(p.t)}</span></div>`).join("")}
     </div>
+    <div class="dw-sect">
+      <h3>Desk chatter</h3>
+      ${deskChatter(k)}
+    </div>
+    <button class="share-btn" id="dwShare">Share price card 📤</button>
     <button class="dw-cta" id="dwSubmit">Submit a print for this SKU</button>`;
   drawer.classList.add("open");
   scrim.classList.add("open");
   document.getElementById("dwX").addEventListener("click", closeDrawer);
   document.getElementById("dwSubmit").addEventListener("click", ()=>{ closeDrawer(); openModal(k); });
+  document.getElementById("dwShare").addEventListener("click", ()=>openShareCard(k));
 }
 function closeDrawer(){ drawer.classList.remove("open"); scrim.classList.remove("open"); drawerSku=null; }
 scrim.addEventListener("click", closeDrawer);
@@ -1232,6 +1352,116 @@ document.getElementById("apiRun").addEventListener("click", ()=>{
   toast(`Live API response generated from current board state.`);
 });
 
+// ---------- Desk chatter ----------
+function deskChatter(k){
+  const up = chgPct(k)>=0;
+  const c1 = up
+    ? [`Mills quoting firm on this — order files into late June.`,`Tried to shake a discount loose, nobody blinking.`,`Counted three buyers chasing the same cars this morning.`]
+    : [`Sellers reaching on this one — got a counter accepted $10 under board.`,`Plenty of offerings, no urgency. Wait it out.`,`Saw a reload move volume below print to clear space.`];
+  const c2 = [`Freight on this lane is the real story, watch fuel surcharges.`,`Quality off one producer has been rough — inspect before unload.`,`Better basis two regions east if you can stand the transit.`];
+  return `<div class="chat-li"><div class="who">PNW wholesaler · trust 91 · 2h ago</div>${pick(c1)}</div>
+    <div class="chat-li"><div class="who">Yard buyer · trust 84 · 5h ago</div>${pick(c2)}</div>`;
+}
+
+// ---------- Share price card ----------
+function openShareCard(k){
+  const cv = document.getElementById("shCanvas"), x = cv.getContext("2d");
+  const W=720, H=900;
+  // bg
+  x.fillStyle="#24382C"; x.fillRect(0,0,W,H);
+  x.fillStyle="#1A2B21"; x.fillRect(0,0,W,150);
+  // brand
+  x.font="800 44px -apple-system, Helvetica, Arial"; x.fillStyle="#EFF2EA";
+  x.fillText("BOARD",48,92);
+  const w1 = x.measureText("BOARD").width;
+  x.fillStyle="#E8730C"; x.fillText("FEET",48+w1,92);
+  x.font="600 20px Menlo, monospace"; x.fillStyle="#A9BCA8";
+  x.fillText("LIVE LUMBER MARKET", 48, 126);
+  // crayon bar
+  x.fillStyle="#E8730C"; x.fillRect(0,150,W,8);
+  // sku name (wrap)
+  x.font="800 40px -apple-system, Helvetica, Arial"; x.fillStyle="#FFFFFF";
+  const words = k.name.split(" "); let line="", yy=230;
+  for(const w of words){
+    if(x.measureText(line+w).width > W-96){ x.fillText(line,48,yy); yy+=50; line=w+" "; }
+    else line += w+" ";
+  }
+  x.fillText(line.trim(),48,yy);
+  x.font="600 24px Menlo, monospace"; x.fillStyle="#A9BCA8";
+  x.fillText(`${k.region} · ${k.cat}`, 48, yy+42);
+  // price
+  const ch = chgPct(k); const up = ch>=0;
+  x.font="800 110px Menlo, monospace"; x.fillStyle="#FFFFFF";
+  x.fillText(fmtView(k), 48, yy+185);
+  x.font="600 26px Menlo, monospace"; x.fillStyle="#C9D4C5";
+  x.fillText(k.unit + (DELIV.on?" delivered · ZIP "+DELIV.zip:" FOB"), 48, yy+225);
+  x.font="800 38px Menlo, monospace"; x.fillStyle = up ? "#7FCB9B" : "#F0907B";
+  x.fillText(`${up?"▲":"▼"} ${Math.abs(ch).toFixed(1)}%  24h`, 48, yy+290);
+  // sparkline big
+  const d = hist(k); const mn=Math.min(...d), mx=Math.max(...d), rg=(mx-mn)||1;
+  const gx=48, gy=yy+340, gw=W-96, gh=140;
+  x.strokeStyle = up ? "#7FCB9B" : "#F0907B"; x.lineWidth=5; x.lineJoin="round";
+  x.beginPath();
+  d.forEach((v,i)=>{ const px=gx+i/(d.length-1)*gw, py=gy+gh-((v-mn)/rg)*gh; i?x.lineTo(px,py):x.moveTo(px,py); });
+  x.stroke();
+  // footer
+  x.font="600 21px Menlo, monospace"; x.fillStyle="#A9BCA8";
+  x.fillText(`${k.prints} prints · ${k.prints>=12?"high":k.prints>=5?"medium":"thin"} confidence`, 48, H-92);
+  x.fillStyle="#E8730C";
+  x.fillText(new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}) + " · live board", 48, H-56);
+  // open modal + wire download
+  document.getElementById("shareModal").classList.add("open");
+  document.getElementById("shDl").href = cv.toDataURL("image/png");
+}
+document.getElementById("shClose").addEventListener("click", ()=>document.getElementById("shareModal").classList.remove("open"));
+document.getElementById("shScrim").addEventListener("click", ()=>document.getElementById("shareModal").classList.remove("open"));
+
+// ---------- Forecast scoreboard ----------
+function renderForecasts(){
+  const rec = ["✓","✓","✗","✓","✓","✓","✗","✓","✓","✓","✗","✓"];
+  document.getElementById("fcBody").innerHTML = COMPS.map((c,i)=>{
+    const {c:ch} = compVal(c);
+    const d1 = ch>0.3?["▲","up"]:ch<-0.3?["▼","dn"]:["–","fl"];
+    const d4 = (DRIFT["SPF"]+i*0.0002)>0?["▲","up"]:["▼","dn"];
+    const shuffled = [...rec].sort(()=>rnd()-0.5);
+    return `<tr><td style="text-align:left;font-family:var(--sans);font-weight:600">${c.lbl}</td>
+      <td class="fc-dir" style="color:var(--${d1[1]==="up"?"up":d1[1]==="dn"?"down":"ink-soft"})">${d1[0]} ${d1[1]==="fl"?"FLAT":d1[1]==="up"?"HIGHER":"LOWER"}</td>
+      <td class="fc-dir" style="color:var(--${d4[1]==="up"?"up":"down"})">${d4[0]} ${d4[1]==="up"?"HIGHER":"LOWER"}</td>
+      <td style="letter-spacing:2px">${shuffled.map(r=>r==="✓"?`<span style="color:var(--up)">✓</span>`:`<span style="color:var(--down)">✗</span>`).join("")}</td></tr>`;
+  }).join("");
+}
+
+// ---------- Futures basis ----------
+function renderFutures(){
+  const cash = compVal(COMPS[5]).v; // framing composite as cash proxy
+  const months = ["Jul 26","Sep 26","Nov 26","Jan 27"];
+  document.getElementById("basisFut").innerHTML = months.map((m,i)=>{
+    const fut = Math.round(cash * (1 + 0.012*(i+1) + rr(-0.008,0.008)));
+    const b = fut - Math.round(cash);
+    return `<tr><td style="text-align:left;font-family:var(--sans);font-weight:600">LBR ${m}</td>
+      <td>$${fut.toLocaleString()}</td><td>$${Math.round(cash).toLocaleString()}</td>
+      <td class="fc-dir" style="color:var(--${b>=0?"up":"down"})">${b>=0?"+":"−"}$${Math.abs(b)}</td></tr>`;
+  }).join("");
+}
+
+// ---------- Hedge calculator ----------
+document.getElementById("hgGo").addEventListener("click", ()=>{
+  const tl = parseFloat(document.getElementById("hgTl").value);
+  const cost = parseFloat(document.getElementById("hgCost").value);
+  const out = document.getElementById("hgOut");
+  if(isNaN(tl)||tl<=0||isNaN(cost)||cost<=0){ out.className="hedge-out show"; out.innerHTML="Enter truckloads and average cost to run the math."; return; }
+  const bf = tl * 27500; // board feet
+  const mbf = bf/1000;
+  const exposure = Math.round(mbf * cost);
+  const contracts = Math.max(1, Math.round(bf/27500));
+  const move = Math.round(mbf * cost * 0.05);
+  out.className="hedge-out show";
+  out.innerHTML = `You're carrying <b>${tl} truckload${tl>1?"s":""}</b> = <b>${mbf.toLocaleString()} MBF</b> = <b>$${exposure.toLocaleString()}</b> of unhedged exposure at your $${cost}/MBF cost.<br>
+  A 5% market drop costs you <b>$${move.toLocaleString()}</b> of inventory value before you sell a stick.<br>
+  Selling <b>${contracts} LBR contract${contracts>1?"s":""}</b> (each = 27,500 bf, one truckload) offsets that move nearly 1-for-1 — the futures gain covers the cash loss.<br>
+  <span style="color:var(--ink-soft);font-size:11px">Illustrative only — basis risk between your SKUs and the contract's 2x4 #2&Btr spec means the hedge is approximate, not perfect. Not trading advice.</span>`;
+});
+
 // ---------- Boot ----------
 populateFilters();
 applyFilters();
@@ -1241,7 +1471,10 @@ document.getElementById("sellerSignals").innerHTML = document.getElementById("si
 populateQuoteSelects();
 renderBasis();
 renderBuySignal();
+renderForecasts();
+renderFutures();
 setInterval(renderBuySignal, 20000);
+setInterval(renderFutures, 25000);
 updateCount();
 // seed the tape
 for(let i=0;i<14;i++){
