@@ -174,6 +174,121 @@ select:focus{outline:2px solid var(--crayon);outline-offset:-1px}
 .toast b{color:#FFC58A}
 
 footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;color:var(--ink-soft);font-family:var(--mono)}
+
+/* ===== View tabs ===== */
+.tabs{display:flex;gap:6px;max-width:1280px;margin:0 auto;padding:10px 14px 0;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:1.5px solid var(--line);background:var(--card);border-radius:6px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+.tab.on{background:var(--spruce);border-color:var(--spruce);color:#fff}
+.tab:focus-visible{outline:2px solid var(--crayon)}
+.print-btn{margin-left:auto;display:flex;gap:7px;align-items:center;border:1.5px solid var(--crayon);background:#fff;color:#B25A08;border-radius:6px;padding:8px 14px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.print-btn:hover{background:#FDF3E7}
+
+/* ===== Persona panels ===== */
+.panel{display:none}
+.panel.on{display:block}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:12px}
+.tool h2{font-size:15px;font-weight:800;margin-bottom:2px}
+.tool .sub{font-size:12px;color:var(--ink-soft);margin-bottom:12px}
+.tool-row{display:flex;gap:8px;flex-wrap:wrap}
+.tool-row input,.tool-row select{padding:10px 12px;border:1.5px solid var(--line);border-radius:7px;font-size:14px;background:#fff;color:var(--ink)}
+.tool-row input:focus,.tool-row select:focus{outline:2px solid var(--crayon);outline-offset:-1px}
+.tool-go{padding:10px 18px;background:var(--spruce);color:#fff;border:none;border-radius:7px;font-size:13.5px;font-weight:700}
+.tool-go:hover{background:#1A2B21}
+.verdict{margin-top:12px;border-radius:8px;padding:14px;display:none}
+.verdict.show{display:block}
+.verdict .big{font-size:17px;font-weight:800}
+.verdict .why{font-size:12.5px;margin-top:4px;line-height:1.5}
+.v-good{background:var(--up-bg);border-left:4px solid var(--up)}
+.v-warn{background:#FBEAD6;border-left:4px solid var(--crayon)}
+.v-bad{background:var(--down-bg);border-left:4px solid var(--down)}
+.meter{height:10px;background:#EBEBE2;border-radius:5px;margin-top:10px;position:relative;overflow:visible}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:linear-gradient(90deg,var(--up),#D8B43A 55%,var(--down))}
+.meter .pin{position:absolute;top:-4px;width:3px;height:18px;background:var(--ink);border-radius:2px}
+.meter-lbl{display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink-soft);font-family:var(--mono);margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px 14px}
+.kpi .k{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.kpi .v{font-family:var(--mono);font-size:22px;font-weight:700;margin-top:3px}
+.kpi .d{font-size:11px;color:var(--ink-soft);margin-top:2px}
+.kpi.hero{background:var(--spruce);border-color:var(--spruce)}
+.kpi.hero .k{color:#A9BCA8}.kpi.hero .v{color:#fff}.kpi.hero .d{color:#C9D4C5}
+.kpi .v .acc{color:var(--crayon)}
+.signal-card{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:12px}
+.signal-card .badge{flex:0 0 auto;font-size:13px;font-weight:800;letter-spacing:.06em;padding:10px 14px;border-radius:6px;transform:rotate(-2deg);border:2px solid currentColor;font-family:var(--mono)}
+.b-buy{color:var(--up);background:var(--up-bg)}
+.b-wait{color:var(--down);background:var(--down-bg)}
+.b-neutral{color:#B25A08;background:#FBEAD6}
+.signal-card .txt{font-size:12.5px;line-height:1.5;color:var(--ink-soft)}
+.signal-card .txt b{color:var(--ink)}
+.basis-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.basis-table th{text-align:right;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding:6px 8px;border-bottom:1px solid var(--line)}
+.basis-table th:first-child,.basis-table td:first-child{text-align:left}
+.basis-table td{padding:7px 8px;border-bottom:1px solid #F0F0E8;font-family:var(--mono);text-align:right}
+.basis-table td.up{color:var(--up);font-weight:700}.basis-table td.dn{color:var(--down);font-weight:700}
+.deliv-chip{display:inline-flex;gap:6px;align-items:center;background:#FDF3E7;border:1.5px dashed var(--crayon);border-radius:5px;padding:5px 10px;font-size:11.5px;font-weight:700;color:#B25A08;font-family:var(--mono)}
+
+/* ===== Platform tab ===== */
+.plat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+@media(max-width:680px){.plat-grid{grid-template-columns:1fr}}
+.ocr-drop{border:2px dashed var(--line);border-radius:8px;padding:22px;text-align:center;background:#FAFAF4;cursor:pointer;transition:border-color .15s}
+.ocr-drop:hover{border-color:var(--crayon)}
+.ocr-drop .ic{font-size:26px;margin-bottom:6px}
+.ocr-drop p{font-size:12.5px;color:var(--ink-soft)}
+.ocr-lines{margin-top:12px;display:none}
+.ocr-lines.show{display:block}
+.ocr-li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;margin-bottom:6px;background:#fff;opacity:0;transform:translateY(4px);animation:ocrIn .35s forwards}
+@keyframes ocrIn{to{opacity:1;transform:none}}
+.ocr-li .ok{color:var(--up);font-weight:700}
+.ocr-li .map{color:var(--ink-soft);font-size:10px}
+.trust-ring{display:flex;gap:16px;align-items:center}
+.trust-num{font-family:var(--mono);font-size:34px;font-weight:800;color:var(--spruce)}
+.trust-bar{height:8px;border-radius:4px;background:#EBEBE2;overflow:hidden;margin-top:6px}
+.trust-bar div{height:100%;background:linear-gradient(90deg,var(--crayon),var(--up));width:87%}
+.trust-facts{font-size:11.5px;color:var(--ink-soft);line-height:1.7}
+.trust-facts b{color:var(--ink);font-family:var(--mono)}
+.int-card{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:7px;padding:12px 14px;margin-bottom:8px;background:#fff}
+.int-card .nm{font-weight:700;font-size:13.5px}
+.int-card .ds{font-size:11px;color:var(--ink-soft)}
+.int-st{font-size:10px;font-weight:800;letter-spacing:.07em;padding:4px 9px;border-radius:4px;text-transform:uppercase;white-space:nowrap}
+.st-live{background:var(--up-bg);color:var(--up)}
+.st-beta{background:#FBEAD6;color:#B25A08}
+.st-soon{background:#EEEEE6;color:var(--ink-soft)}
+.api-block{background:var(--spruce-deep);border-radius:8px;padding:14px;font-family:var(--mono);font-size:11px;color:#C9D4C5;overflow-x:auto;white-space:pre;line-height:1.6}
+.api-block .g{color:#7FCB9B}.api-block .o{color:#FFC58A}.api-block .k{color:#8FB6D9}
+.api-run{margin-top:10px}
+.meth-li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #F0F0E8;font-size:12.5px;line-height:1.5}
+.meth-li .n{flex:0 0 auto;font-family:var(--mono);font-weight:800;color:var(--crayon);font-size:11px;padding-top:2px}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.tier{border:1.5px solid var(--line);border-radius:8px;padding:16px;background:#fff;position:relative}
+.tier.hot{border-color:var(--crayon);box-shadow:0 2px 12px rgba(232,115,12,.15)}
+.tier .t-tag{position:absolute;top:-9px;left:14px;background:var(--crayon);color:#fff;font-size:9px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:3px}
+.tier h4{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.tier .pr{font-family:var(--mono);font-size:22px;font-weight:800;margin:6px 0 2px}
+.tier .pr span{font-size:11px;font-weight:400;color:var(--ink-soft)}
+.tier ul{list-style:none;margin-top:10px}
+.tier li{font-size:11.5px;color:var(--ink-soft);padding:4px 0 4px 16px;position:relative}
+.tier li::before{content:"—";position:absolute;left:0;color:var(--crayon)}
+
+
+#printReport{display:none}
+@media print{
+  body > *:not(#printReport){display:none !important}
+  #printReport{display:block;font-family:Georgia,"Times New Roman",serif;color:#000;padding:0;font-size:11pt}
+  body{background:#fff}
+  .pr-head{border-bottom:3px solid #000;padding-bottom:8px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline}
+  .pr-head h1{font-family:Arial,Helvetica,sans-serif;font-size:20pt;letter-spacing:.1em;font-weight:800}
+  .pr-head .pr-date{font-size:10pt;font-style:italic}
+  .pr-sect{margin-bottom:16px;page-break-inside:avoid}
+  .pr-sect h2{font-family:Arial,Helvetica,sans-serif;font-size:11pt;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid #999;padding-bottom:3px;margin-bottom:8px}
+  .pr-table{width:100%;border-collapse:collapse;font-size:9.5pt}
+  .pr-table th{text-align:right;border-bottom:1.5px solid #000;padding:4px 6px;font-family:Arial,sans-serif;font-size:8.5pt;text-transform:uppercase;letter-spacing:.05em}
+  .pr-table th:first-child,.pr-table td:first-child{text-align:left}
+  .pr-table td{padding:4px 6px;border-bottom:.5px solid #ccc;text-align:right;font-variant-numeric:tabular-nums}
+  .pr-up::before{content:"▲ "}.pr-dn::before{content:"▼ "}
+  .pr-note{font-size:8pt;color:#444;margin-top:14px;border-top:1px solid #999;padding-top:6px}
+  .pr-two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+}
 </style>
 </head>
 <body>
@@ -193,7 +308,155 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 
 <div class="tape-wrap"><div class="tape" id="tape"></div></div>
 
+<nav class="tabs" aria-label="Views">
+  <button class="tab on" data-view="board">Market Board</button>
+  <button class="tab" data-view="buyer">Buyer View</button>
+  <button class="tab" data-view="seller">Seller View</button>
+  <button class="tab" data-view="platform">Platform</button>
+  <button class="print-btn" id="printBtn">
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2.5" y="1" width="8" height="3.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4.5" width="11" height="5" stroke="currentColor" stroke-width="1.4"/><rect x="3" y="8" width="7" height="4" fill="#fff" stroke="currentColor" stroke-width="1.4"/></svg>
+    Print report
+  </button>
+</nav>
+
 <main>
+  <!-- ============ BUYER PANEL ============ -->
+  <section class="panel" id="panel-buyer">
+    <div class="kpis">
+      <div class="kpi hero"><div class="k">Saved vs market this month</div><div class="v">$<span class="acc" id="kSaved">4,218</span></div><div class="d">across 11 verified purchases</div></div>
+      <div class="kpi"><div class="k">Your avg vs board</div><div class="v" id="kAvg">−1.8%</div><div class="d">you buy below market</div></div>
+      <div class="kpi"><div class="k">Watchlist alerts</div><div class="v" id="kAlerts">3</div><div class="d">SKUs moved &gt;2% today</div></div>
+      <div class="kpi"><div class="k">Open RFQs</div><div class="v">2</div><div class="d">5 seller responses</div></div>
+    </div>
+
+    <div class="signal-card" id="buySignal">
+      <div class="badge b-neutral" id="bsBadge">HOLD</div>
+      <div class="txt" id="bsTxt"><b>Framing composite is flat this week.</b> No urgency to lock — spot and 2-week forward are within 1%.</div>
+    </div>
+
+    <div class="tool">
+      <h2>Delivered price check</h2>
+      <p class="sub">Enter your ship-to ZIP once — every price converts from FOB mill to delivered at your yard, freight modeled by lane.</p>
+      <div class="tool-row">
+        <input id="dZip" inputmode="numeric" placeholder="Ship-to ZIP (e.g. 97058)" style="flex:1;min-width:140px">
+        <button class="tool-go" id="dGo">Set delivered pricing</button>
+      </div>
+      <div class="verdict v-good" id="dOut"></div>
+    </div>
+
+    <div class="tool">
+      <h2>Am I getting a fair quote?</h2>
+      <p class="sub">Paste a quote you received. We place it against live prints for that SKU in your region.</p>
+      <div class="tool-row">
+        <select id="bqSku" style="flex:2;min-width:180px"></select>
+        <input id="bqPrice" type="number" inputmode="decimal" placeholder="Quoted price" style="flex:1;min-width:110px">
+        <button class="tool-go" id="bqGo">Check it</button>
+      </div>
+      <div class="verdict" id="bqOut"></div>
+    </div>
+  </section>
+
+  <!-- ============ SELLER PANEL ============ -->
+  <section class="panel" id="panel-seller">
+    <div class="kpis">
+      <div class="kpi hero"><div class="k">Inquiry volume · your SKUs</div><div class="v"><span class="acc">+22%</span></div><div class="d">vs trailing 4-week avg</div></div>
+      <div class="kpi"><div class="k">Quote win rate</div><div class="v">61%</div><div class="d">last 30 days, benchmarked</div></div>
+      <div class="kpi"><div class="k">Avg realized vs board</div><div class="v" style="color:var(--up)">+0.9%</div><div class="d">you sell above market</div></div>
+      <div class="kpi"><div class="k">Lost-bid gap</div><div class="v" style="color:var(--down)">−$12</div><div class="d">median undercut on losses</div></div>
+    </div>
+
+    <div class="tool">
+      <h2>Quote benchmarking</h2>
+      <p class="sub">Before you send a quote, see where it lands against the live market for that SKU and region.</p>
+      <div class="tool-row">
+        <select id="sqSku" style="flex:2;min-width:180px"></select>
+        <input id="sqPrice" type="number" inputmode="decimal" placeholder="Your quote" style="flex:1;min-width:110px">
+        <button class="tool-go" id="sqGo">Benchmark</button>
+      </div>
+      <div class="verdict" id="sqOut"></div>
+    </div>
+
+    <div class="tool">
+      <h2>Regional basis — where your wood is worth more</h2>
+      <p class="sub">Same product, live spread across regions. Positive basis = premium market vs PNW.</p>
+      <div class="tool-row" style="margin-bottom:10px">
+        <select id="basisSku" style="flex:1;min-width:200px"></select>
+      </div>
+      <table class="basis-table"><thead><tr><th>Region</th><th>Last</th><th>Basis vs PNW</th><th>24h</th><th>Prints</th></tr></thead><tbody id="basisBody"></tbody></table>
+    </div>
+
+    <div class="tool">
+      <h2>Demand heat — what buyers are searching &amp; requesting</h2>
+      <p class="sub">Leading indicators from buyer-side activity. Inquiry spikes typically lead price moves by 2–5 days.</p>
+      <div class="signals" id="sellerSignals" style="margin:0"></div>
+    </div>
+  </section>
+
+  <!-- ============ PLATFORM PANEL ============ -->
+  <section class="panel" id="panel-platform">
+    <div class="plat-grid">
+      <div class="tool">
+        <h2>Invoice scan — zero-friction contribution</h2>
+        <p class="sub">Snap or forward an invoice. We extract line items, map them to canonical SKUs, and post verified prints. The original is hashed and never shown to anyone.</p>
+        <div class="ocr-drop" id="ocrDrop" role="button" tabindex="0">
+          <div class="ic">📄</div>
+          <p><b>Tap to simulate an invoice scan</b><br>(production: camera, photo, or email-forward to prints@boardfeet)</p>
+        </div>
+        <div class="ocr-lines" id="ocrLines"></div>
+      </div>
+
+      <div class="tool">
+        <h2>Your contributor trust score</h2>
+        <p class="sub">Prints are weighted by contributor reliability — consistency with later market prints, verification rate, and tenure. Gaming the board doesn't work; it just zeroes your weight.</p>
+        <div class="trust-ring">
+          <div>
+            <div class="trust-num">87<span style="font-size:14px;color:var(--ink-soft)">/100</span></div>
+            <div class="trust-bar" style="width:130px"><div></div></div>
+          </div>
+          <div class="trust-facts">
+            Print weight multiplier: <b>2.4×</b><br>
+            Invoice-verified rate: <b>78%</b><br>
+            Agreement w/ market: <b>±1.1%</b> median<br>
+            Status: <b style="color:var(--up)">Verified Contributor</b> · free Pro tier
+          </div>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h2>Integrations — prices inside the tools you already use</h2>
+        <p class="sub">Live board price next to your cost in the quoting screen. Opt-in invoice sync contributes automatically and earns the premium tier free.</p>
+        <div class="int-card"><div><div class="nm">Epicor BisTrack</div><div class="ds">Quote-screen price overlay + invoice sync</div></div><span class="int-st st-live">Live</span></div>
+        <div class="int-card"><div><div class="nm">DMSi Agility</div><div class="ds">PO benchmarking + auto-contribution</div></div><span class="int-st st-live">Live</span></div>
+        <div class="int-card"><div><div class="nm">Spruce / ECI</div><div class="ds">Yard POS price feed</div></div><span class="int-st st-beta">Beta</span></div>
+        <div class="int-card"><div><div class="nm">QuickBooks</div><div class="ds">Small-yard invoice ingestion</div></div><span class="int-st st-beta">Beta</span></div>
+        <div class="int-card"><div><div class="nm">CME / contract reference</div><div class="ds">Settlement-grade index feed</div></div><span class="int-st st-soon">Roadmap</span></div>
+      </div>
+
+      <div class="tool">
+        <h2>API — the board in your ERP, pricing engine, or model</h2>
+        <p class="sub">REST + webhooks. Every index, SKU, region, and demand signal. Enterprise tier.</p>
+        <div class="api-block" id="apiBlock"><span class="g">GET</span> /v1/prices?sku=2x6-2-spf-kd-16&region=PNW
+
+<span class="o">→ tap "Run request" for a live response</span></div>
+        <button class="tool-go api-run" id="apiRun">Run request</button>
+      </div>
+
+      <div class="tool" style="grid-column:1/-1">
+        <h2>Methodology &amp; governance — built to be the benchmark</h2>
+        <p class="sub">Designed to IOSCO benchmark principles from day one, because indices that get written into supply contracts are audited, not just trusted.</p>
+        <div class="meth-li"><span class="n">01</span><span><b>Volume-weighted, transaction-only.</b> Indications and offers are tracked but never enter a published price — only transacted prints.</span></div>
+        <div class="meth-li"><span class="n">02</span><span><b>Minimum 3 independent contributors</b> per published figure. Below threshold, the price is suppressed and marked "thin" — never estimated.</span></div>
+        <div class="meth-li"><span class="n">03</span><span><b>Outlier dampening, not deletion.</b> Prints beyond 2σ of the rolling median are downweighted with the action logged to an immutable audit trail.</span></div>
+        <div class="meth-li"><span class="n">04</span><span><b>Anti-signaling controls.</b> No raw competitor prints visible; aggregation thresholds and time delays on identifiable data, reviewed by antitrust counsel.</span></div>
+        <div class="meth-li"><span class="n">05</span><span><b>Published revision policy.</b> Corrections are versioned, timestamped, and announced — never silent.</span></div>
+        <div class="meth-li"><span class="n">06</span><span><b>Independent advisory board</b> of named traders, mill economists, and a methodology auditor reviews quarterly.</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ MARKET BOARD ============ -->
+  <section class="panel on" id="panel-board">
   <section class="composites" id="composites" aria-label="Market composites"></section>
 
   <section class="signals" id="signals" aria-label="Demand signals"></section>
@@ -222,7 +485,10 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
     <button class="load-more" id="more" style="display:none">Show more SKUs</button>
     <div class="empty" id="empty" style="display:none">No SKUs match those filters. Clear a filter or widen the search.</div>
   </section>
+  </section><!-- /panel-board -->
 </main>
+
+<div id="printReport" aria-hidden="true"></div>
 
 <button class="fab" id="fabSubmit">
   <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -248,13 +514,13 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
     <div class="fld"><label for="mQty">Quantity</label><input id="mQty" placeholder="e.g. 2 truckloads / 4 MBF"></div>
     <div class="fld"><label for="mZip">Ship-to ZIP</label><input id="mZip" inputmode="numeric" placeholder="97058"></div>
     <button class="m-submit" id="mGo">Post to the board</button>
-    <p class="m-note">Prints are anonymized and aggregated. Invoice-verified prints carry more weight.</p>
+    <p class="m-note">Prints are anonymized and aggregated. Invoice-verified prints carry 2.4× weight · your trust score: 87.</p>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<footer>BOARDFEET demo build · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+<footer>BOARDFEET demo build v4 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
 
 <script>
 "use strict";
@@ -507,7 +773,7 @@ function rowHtml(k){
   const cls = ch>0.05?"up":ch<-0.05?"dn":"fl";
   const sym = ch>0.05?"▲":ch<-0.05?"▼":"–";
   return `<div class="r-desc"><div class="nm">${k.name}</div><div class="mt">${k.region} · ${k.cat} · ${ago(k.lastTs)}</div></div>
-    <div class="r-num">${fmt(k)}<div style="font-size:9.5px;font-weight:400;color:var(--ink-soft)">${k.unit}</div></div>
+    <div class="r-num">${fmtView(k)}<div style="font-size:9.5px;font-weight:400;color:var(--ink-soft)">${k.unit}${DELIV.on?" dlvd":""}</div></div>
     <div class="r-chg ${cls}">${sym} ${Math.abs(ch).toFixed(1)}%</div>
     <div class="r-spark">${spark(k)}</div>
     <div class="r-conf">${confPill(k)}</div>
@@ -715,11 +981,267 @@ document.addEventListener("keydown", e=>{
   if(e.key==="Escape"){ closeDrawer(); closeModal(); }
 });
 
+// ---------- Persona views ----------
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on", x===t));
+    const v = t.dataset.view;
+    document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on", p.id==="panel-"+v));
+  });
+});
+
+// ---------- Delivered pricing ----------
+const DELIV = {on:false, zip:"", home:"PNW"};
+const FREIGHT_TIER = { // $/MBF adder between regions
+  PNW:      {PNW:28, Inland:55, SoCal:85, Texas:120, Southeast:150, Midwest:110, Northeast:150},
+  Inland:   {PNW:55, Inland:28, SoCal:80, Texas:95,  Southeast:130, Midwest:85,  Northeast:135},
+  SoCal:    {PNW:85, Inland:80, SoCal:28, Texas:85,  Southeast:120, Midwest:105, Northeast:150},
+  Texas:    {PNW:120,Inland:95, SoCal:85, Texas:28,  Southeast:70,  Midwest:75,  Northeast:115},
+  Southeast:{PNW:150,Inland:130,SoCal:120,Texas:70,  Southeast:28,  Midwest:80,  Northeast:75},
+  Midwest:  {PNW:110,Inland:85, SoCal:105,Texas:75,  Southeast:80,  Midwest:28,  Northeast:65},
+  Northeast:{PNW:150,Inland:135,SoCal:150,Texas:115, Southeast:75,  Midwest:65,  Northeast:28}
+};
+function zipToRegion(z){
+  const p = parseInt(String(z).slice(0,2),10);
+  if(p>=97) return "PNW";
+  if(p>=88 && p<=96) return (p===88||p===89)?"Inland":(p>=90&&p<=93)?"SoCal":"PNW";
+  if(p>=83 && p<=87) return "Inland";
+  if(p>=75 && p<=82) return "Texas";
+  if(p>=60 && p<=74) return "Midwest";
+  if(p>=46 && p<=59) return "Midwest";
+  if(p>=27 && p<=42) return "Southeast";
+  return "Northeast";
+}
+function freightFor(k){
+  const f = FREIGHT_TIER[DELIV.home][k.region];
+  if(k.unit==="$/MSF") return Math.round(f*0.8);
+  if(k.unit==="$/LF") return +(f/250).toFixed(2);
+  return f;
+}
+function fmtView(k){
+  if(!DELIV.on) return fmt(k);
+  const p = k.price + freightFor(k);
+  return k.unit==="$/LF" ? "$"+p.toFixed(2) : "$"+Math.round(p).toLocaleString();
+}
+document.getElementById("dGo").addEventListener("click", ()=>{
+  const z = document.getElementById("dZip").value.trim();
+  const out = document.getElementById("dOut");
+  if(!/^\d{5}$/.test(z)){ out.className="verdict v-bad show"; out.innerHTML=`<div class="big">Enter a 5-digit ZIP</div>`; return; }
+  DELIV.on = true; DELIV.zip = z; DELIV.home = zipToRegion(z);
+  out.className="verdict v-good show";
+  const ex = SKUS.find(s=>s.region===DELIV.home && s.cat==="Dimension" && s.name.includes("2x6 #2"));
+  out.innerHTML = `<div class="big">Delivered pricing on — ZIP ${z} (${DELIV.home} lanes)</div>
+    <div class="why">Every board price now includes modeled freight to your yard. Example: <b>${ex.name}</b> is ${fmt(ex)} FOB → <b>${fmtView(ex)}</b> delivered (+$${freightFor(ex)}/MBF lane cost). Switch to the Market Board tab to browse delivered.</div>`;
+  applyFilters();
+  document.getElementById("resultN").insertAdjacentHTML("beforebegin",
+    document.getElementById("delivChip")?"":`<span class="deliv-chip" id="delivChip">DELIVERED · ${z}</span>`);
+  toast(`Delivered pricing active for ZIP <b>${z}</b> — board converted from FOB.`);
+});
+
+// ---------- Quote percentile engine ----------
+function ncdf(z){ return 1/(1+Math.exp(-1.702*z)); }
+function quotePercentile(k, q){
+  const mkt = DELIV.on ? k.price + freightFor(k) : k.price;
+  const z = (q - mkt)/(0.025*mkt);
+  return {pct: Math.max(1,Math.min(99,Math.round(ncdf(z)*100))), mkt};
+}
+function meterHtml(pct){
+  return `<div class="meter"><div class="fill" style="width:100%"></div><div class="pin" style="left:calc(${pct}% - 1px)"></div></div>
+  <div class="meter-lbl"><span>Below market</span><span>Market</span><span>Above market</span></div>`;
+}
+function populateQuoteSelects(){
+  const opts = SKUS.filter(k=>(k.cat==="Dimension"&&k.name.includes("#2")&&["8'","12'","16'"].some(L=>k.name.endsWith(L)))||k.cat==="Panels"||k.cat==="Studs")
+    .slice(0,400)
+    .map(k=>`<option value="${k.id}">${k.name} — ${k.region}</option>`).join("");
+  for(const id of ["bqSku","sqSku","basisSku"]) document.getElementById(id).innerHTML = opts;
+  // basisSku gets one entry per product name (region picked live)
+}
+document.getElementById("bqGo").addEventListener("click", ()=>{
+  const k = SKUS[+document.getElementById("bqSku").value];
+  const q = parseFloat(document.getElementById("bqPrice").value);
+  const out = document.getElementById("bqOut");
+  if(!k||isNaN(q)){ out.className="verdict v-bad show"; out.innerHTML=`<div class="big">Pick a SKU and enter the quoted price</div>`; return; }
+  const {pct,mkt} = quotePercentile(k,q);
+  const mf = v => k.unit==="$/LF" ? "$"+v.toFixed(2) : "$"+Math.round(v).toLocaleString();
+  let cls,big,why;
+  if(pct<=38){ cls="v-good"; big=`Good price — better than ${100-pct}% of recent prints`;
+    why=`Market is at <b>${mf(mkt)}</b> ${k.unit}${DELIV.on?" delivered":""}. You're ${mf(Math.abs(mkt-q))} under. Take it — and post the print after you buy to keep the board sharp.`; }
+  else if(pct<=62){ cls="v-warn"; big=`Fair quote — right at market (${pct}th percentile)`;
+    why=`Market is <b>${mf(mkt)}</b>. Nothing wrong with this number; if volume is decent, ask for ${mf(mkt*0.985)} and you'll likely get it.`; }
+  else { cls="v-bad"; big=`Above market — ${pct}th percentile of recent prints`;
+    why=`Market is <b>${mf(mkt)}</b>; this quote is ${mf(q-mkt)} high. Counter at <b>${mf(mkt*0.995)}</b> — ${ri(4,9)} sellers printed at or below that in the last 48h.`; }
+  out.className=`verdict ${cls} show`;
+  out.innerHTML=`<div class="big">${big}</div><div class="why">${why}</div>${meterHtml(pct)}`;
+});
+document.getElementById("sqGo").addEventListener("click", ()=>{
+  const k = SKUS[+document.getElementById("sqSku").value];
+  const q = parseFloat(document.getElementById("sqPrice").value);
+  const out = document.getElementById("sqOut");
+  if(!k||isNaN(q)){ out.className="verdict v-bad show"; out.innerHTML=`<div class="big">Pick a SKU and enter your quote</div>`; return; }
+  const {pct,mkt} = quotePercentile(k,q);
+  const mf = v => k.unit==="$/LF" ? "$"+v.toFixed(2) : "$"+Math.round(v).toLocaleString();
+  let cls,big,why;
+  if(pct<=35){ cls="v-warn"; big=`Leaving money on the table — ${pct}th percentile`;
+    why=`Market is <b>${mf(mkt)}</b> and inquiry volume on this SKU is healthy. You could quote <b>${mf(mkt*1.005)}</b> and stay competitive — that's ${mf(mkt*1.005-q)} more per ${k.unit.replace("$/","")}.`; }
+  else if(pct<=68){ cls="v-good"; big=`Competitive quote — ${pct}th percentile, strong win position`;
+    why=`Market is <b>${mf(mkt)}</b>. Quotes in this band are winning ~${ri(58,72)}% of bids this week. Send it.`; }
+  else { cls="v-bad"; big=`High risk — above ${pct}% of recent prints`;
+    why=`Market is <b>${mf(mkt)}</b>; you're ${mf(q-mkt)} over. Median lost-bid gap this week is $12 — at this level expect to lose unless the buyer values your freight/terms. Reprice toward <b>${mf(mkt*1.01)}</b> to stay in the hunt.`; }
+  out.className=`verdict ${cls} show`;
+  out.innerHTML=`<div class="big">${big}</div><div class="why">${why}</div>${meterHtml(pct)}`;
+});
+
+// ---------- Regional basis ----------
+function renderBasis(){
+  const k = SKUS[+document.getElementById("basisSku").value];
+  if(!k) return;
+  const fam = SKUS.filter(s=>s.name===k.name);
+  const pnw = fam.find(s=>s.region==="PNW") || fam[0];
+  document.getElementById("basisBody").innerHTML = REGIONS.map(rg=>{
+    const s = fam.find(x=>x.region===rg); if(!s) return "";
+    const b = s.price - pnw.price;
+    const ch = chgPct(s);
+    return `<tr><td>${rg}${rg===DELIV.home&&DELIV.on?" ●":""}</td><td>${fmt(s)}</td>
+      <td class="${b>0?"up":b<0?"dn":""}">${b===0?"—":(b>0?"+":"−")+"$"+Math.abs(Math.round(b))}</td>
+      <td class="${ch>=0?"up":"dn"}">${ch>=0?"+":""}${ch.toFixed(1)}%</td><td>${s.prints}</td></tr>`;
+  }).join("");
+}
+document.getElementById("basisSku").addEventListener("change", renderBasis);
+
+// ---------- Buy / wait signal ----------
+function renderBuySignal(){
+  const fr = COMPS[5]; const {c} = compVal(fr);
+  const avgDrift = (DRIFT["SPF"]+DRIFT["DF"]+DRIFT["SYP"])/3;
+  const badge = document.getElementById("bsBadge"), txt = document.getElementById("bsTxt");
+  if(avgDrift>0.0004 || c>1.2){
+    badge.className="badge b-buy"; badge.textContent="BUY NOW";
+    txt.innerHTML=`<b>Framing composite is firming (+${Math.abs(c).toFixed(1)}% and climbing).</b> Inquiry volume is leading price by 2–4 days — locking your package this week likely beats waiting. Confidence: high (${ri(180,260)} prints behind this signal).`;
+  } else if(avgDrift<-0.0004 || c<-1.2){
+    badge.className="badge b-wait"; badge.textContent="WAIT";
+    txt.innerHTML=`<b>Framing composite is softening (${c.toFixed(1)}%).</b> Sellers are reaching — RFQ responses are coming back below board. If your job allows 5–7 days, waiting likely saves 1–2%.`;
+  } else {
+    badge.className="badge b-neutral"; badge.textContent="HOLD";
+    txt.innerHTML=`<b>Framing composite is flat this week (${c>=0?"+":""}${c.toFixed(1)}%).</b> No urgency to lock — spot and near-term are within 1%. Watch the demand strip; an inquiry spike is your early warning.`;
+  }
+  // watchlist alert count
+  let n=0; for(let i=0;i<300;i++){ if(Math.abs(chgPct(SKUS[i*17%SKUS.length]))>2) n++; }
+  document.getElementById("kAlerts").textContent = Math.max(1,Math.min(9,Math.round(n/14)));
+}
+
+// ---------- Print report ----------
+function buildPrintReport(){
+  const d = new Date();
+  const dateStr = d.toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  const timeStr = d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  // composites
+  const compRows = COMPS.map(c=>{ const {v,c:ch} = compVal(c);
+    return `<tr><td>${c.lbl}</td><td>$${Math.round(v).toLocaleString()}</td><td class="${ch>=0?"pr-up":"pr-dn"}">${Math.abs(ch).toFixed(1)}%</td></tr>`; }).join("");
+  // movers among #2 dimension
+  const pool = SKUS.filter(k=>k.cat==="Dimension"&&k.name.includes("#2"));
+  const sorted = [...pool].sort((a,b)=>chgPct(b)-chgPct(a));
+  const movRow = k=>`<tr><td>${k.name} · ${k.region}</td><td>${fmt(k)}</td><td class="${chgPct(k)>=0?"pr-up":"pr-dn"}">${Math.abs(chgPct(k)).toFixed(1)}%</td><td>${k.prints}</td></tr>`;
+  const gain = sorted.slice(0,8).map(movRow).join("");
+  const lose = sorted.slice(-8).reverse().map(movRow).join("");
+  // regional matrix: 2x4 #2 16' by species
+  const matSpecies = ["SPF KD","DF Green","Hem-Fir KD","SYP KD"];
+  const matRows = matSpecies.map(sp=>{
+    const cells = REGIONS.map(rg=>{
+      const s = SKUS.find(k=>k.region===rg && k.name===`2x4 #2 ${sp} 16'`);
+      return `<td>${s?("$"+s.price.toLocaleString()):"—"}</td>`;
+    }).join("");
+    return `<tr><td>2x4 #2 ${sp} 16'</td>${cells}</tr>`;
+  }).join("");
+  document.getElementById("printReport").innerHTML = `
+    <div class="pr-head"><h1>BOARDFEET<span style="font-weight:400"> · Daily Market Report</span></h1><div class="pr-date">${dateStr} · ${timeStr} · ${printsToday.toLocaleString()} prints today</div></div>
+    <div class="pr-sect"><h2>Composites</h2>
+      <table class="pr-table"><thead><tr><th>Index</th><th>Level ($/MBF)</th><th>Change</th></tr></thead><tbody>${compRows}</tbody></table></div>
+    <div class="pr-two">
+      <div class="pr-sect"><h2>Top gainers — #2 dimension</h2>
+        <table class="pr-table"><thead><tr><th>SKU · Region</th><th>Last</th><th>Chg</th><th>Prints</th></tr></thead><tbody>${gain}</tbody></table></div>
+      <div class="pr-sect"><h2>Top decliners — #2 dimension</h2>
+        <table class="pr-table"><thead><tr><th>SKU · Region</th><th>Last</th><th>Chg</th><th>Prints</th></tr></thead><tbody>${lose}</tbody></table></div>
+    </div>
+    <div class="pr-sect"><h2>Regional matrix — 2x4 #2 16' ($/MBF, FOB)</h2>
+      <table class="pr-table"><thead><tr><th>Product</th>${REGIONS.map(r=>`<th>${r}</th>`).join("")}</tr></thead><tbody>${matRows}</tbody></table></div>
+    <div class="pr-sect"><h2>Demand signals</h2>
+      <table class="pr-table"><tbody>
+        <tr><td>2x6 #2 DF Green 16' inquiry volume</td><td class="pr-up">+34% · PNW</td></tr>
+        <tr><td>OSB 7/16" stockout reports</td><td>6 yards · SoCal</td></tr>
+        <tr><td>SYP PT 2x10 RFQ flow</td><td class="pr-up">+18% · Southeast</td></tr>
+        <tr><td>Stud SPF 92-5/8" median lost-bid gap</td><td class="pr-dn">$14 below board</td></tr>
+      </tbody></table></div>
+    <div class="pr-note">BOARDFEET demo — simulated data for product demonstration only. Production reports: prices are volume-weighted aggregates of verified transaction prints; no figure published with fewer than 3 independent contributors; methodology and revision policy at boardfeet.example/methodology. Delivered conversions available per subscriber lane profile.</div>`;
+}
+document.getElementById("printBtn").addEventListener("click", ()=>{ buildPrintReport(); window.print(); });
+window.addEventListener("beforeprint", buildPrintReport);
+
+// ---------- Invoice OCR simulation ----------
+const ocrDrop = document.getElementById("ocrDrop");
+function runOcr(){
+  const lines = document.getElementById("ocrLines");
+  const picks = [];
+  const pool = SKUS.filter(k=>k.region==="PNW"&&(k.cat==="Dimension"||k.cat==="Panels"));
+  for(let i=0;i<4;i++) picks.push(pool[Math.floor(rnd()*pool.length)]);
+  lines.className = "ocr-lines show";
+  lines.innerHTML = `<div style="font-size:11px;color:var(--ink-soft);margin-bottom:8px;font-family:var(--mono)">Scanning invoice… extracting line items</div>`;
+  picks.forEach((k,i)=>{
+    setTimeout(()=>{
+      const p = k.price*rr(0.98,1.02);
+      lines.insertAdjacentHTML("beforeend",
+        `<div class="ocr-li" style="animation-delay:0s"><span>${k.name} · ${pick(QTYS)} · ${fmt(k,k.unit==="$/LF"?+p.toFixed(2):Math.round(p))}</span><span><span class="ok">✓ mapped</span> <span class="map">→ SKU #${k.id}</span></span></div>`);
+      if(i===3){
+        setTimeout(()=>{
+          lines.insertAdjacentHTML("beforeend",
+            `<button class="tool-go" id="ocrPost" style="margin-top:6px">Post 4 verified prints to the board</button>`);
+          document.getElementById("ocrPost").addEventListener("click", ()=>{
+            picks.forEach(k=>tickSku(k,true,null));
+            toast(`<b>4 invoice-verified prints</b> posted at 2.4× weight. Trust score +1.`);
+            lines.className="ocr-lines";
+          });
+        }, 350);
+      }
+    }, 450*(i+1));
+  });
+}
+ocrDrop.addEventListener("click", runOcr);
+ocrDrop.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); runOcr(); } });
+
+// ---------- API demo ----------
+document.getElementById("apiRun").addEventListener("click", ()=>{
+  const k = SKUS.find(s=>s.region==="PNW"&&s.name==="2x6 #2 SPF KD 16'") || SKUS[0];
+  const d = hist(k);
+  const body =
+`<span class="g">GET</span> /v1/prices?sku=2x6-2-spf-kd-16&region=PNW
+<span class="o">200 OK · ${new Date().toISOString()}</span>
+{
+  <span class="k">"sku"</span>: "2x6 #2 SPF KD 16'",
+  <span class="k">"region"</span>: "PNW",
+  <span class="k">"unit"</span>: "USD/MBF",
+  <span class="k">"last"</span>: ${k.price},
+  <span class="k">"change_24h_pct"</span>: ${chgPct(k).toFixed(2)},
+  <span class="k">"high_24h"</span>: ${Math.round(Math.max(...d))},
+  <span class="k">"low_24h"</span>: ${Math.round(Math.min(...d))},
+  <span class="k">"prints_24h"</span>: ${k.prints},
+  <span class="k">"confidence"</span>: "${k.prints>=12?"high":k.prints>=5?"medium":"thin"}",
+  <span class="k">"contributors"</span>: ${Math.max(3, Math.round(k.prints/3))},
+  <span class="k">"demand_signal"</span>: { <span class="k">"inquiry_vol_wow_pct"</span>: 34, <span class="k">"trend"</span>: "leading_up" },
+  <span class="k">"delivered"</span>: { <span class="k">"zip"</span>: "${DELIV.on?DELIV.zip:"set via ?zip="}", <span class="k">"freight_mbf"</span>: ${DELIV.on?freightFor(k):"null"} },
+  <span class="k">"methodology"</span>: "boardfeet.example/methodology/v1"
+}`;
+  document.getElementById("apiBlock").innerHTML = body;
+  toast(`Live API response generated from current board state.`);
+});
+
 // ---------- Boot ----------
 populateFilters();
 applyFilters();
 renderComposites();
 renderSignals();
+document.getElementById("sellerSignals").innerHTML = document.getElementById("signals").innerHTML;
+populateQuoteSelects();
+renderBasis();
+renderBuySignal();
+setInterval(renderBuySignal, 20000);
 updateCount();
 // seed the tape
 for(let i=0;i<14;i++){
