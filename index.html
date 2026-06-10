@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BOARDFEET — Live Lumber Market Intelligence</title>
+<style>
+:root{
+  --ink:#22261F;
+  --ink-soft:#5A6052;
+  --paper:#EDEEE8;
+  --card:#FFFFFF;
+  --spruce:#24382C;
+  --spruce-deep:#1A2B21;
+  --crayon:#E8730C;
+  --up:#2F7D4D;
+  --up-bg:#E4F0E8;
+  --down:#BE3D2A;
+  --down-bg:#F6E6E2;
+  --line:#D8D9CF;
+  --mono:"SF Mono","Cascadia Code","Roboto Mono",Consolas,Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.45}
+button{font-family:inherit;cursor:pointer}
+
+/* ===== Header ===== */
+header{background:var(--spruce);color:#EFF2EA;padding:14px 18px 12px;position:sticky;top:0;z-index:40;box-shadow:0 2px 8px rgba(20,30,22,.25)}
+.hd-row{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1280px;margin:0 auto}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{font-size:21px;font-weight:800;letter-spacing:.14em}
+.brand h1 .ft{color:var(--crayon)}
+.brand .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A9BCA8;display:none}
+@media(min-width:640px){.brand .tag{display:inline}}
+.live-chip{display:flex;align-items:center;gap:7px;border:1.5px solid rgba(232,115,12,.65);border-radius:3px;padding:5px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:#FFD9B3;transform:rotate(-1.2deg);background:rgba(232,115,12,.08)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--crayon);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.sku-count{font-family:var(--mono);font-size:11px;color:#A9BCA8;margin-top:3px;letter-spacing:.04em}
+
+/* ===== Print tape ===== */
+.tape-wrap{background:var(--spruce-deep);overflow:hidden;border-bottom:3px solid var(--crayon);position:sticky;top:0;z-index:39}
+.tape{display:flex;gap:0;white-space:nowrap;animation:scroll 50s linear infinite;width:max-content}
+.tape:hover{animation-play-state:paused}
+.tape-item{font-family:var(--mono);font-size:12px;padding:7px 18px;color:#C9D4C5;border-right:1px solid rgba(255,255,255,.08);display:inline-flex;gap:8px;align-items:center}
+.tape-item b{color:#fff;font-weight:600}
+.tape-item .t-up{color:#7FCB9B}.tape-item .t-dn{color:#F0907B}
+.tape-item .t-new{color:var(--crayon);font-weight:700}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.tape{animation:none;overflow-x:auto}.live-dot{animation:none}}
+
+/* ===== Layout ===== */
+main{max-width:1280px;margin:0 auto;padding:16px 14px 90px}
+
+/* ===== Composite cards ===== */
+.composites{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.comp-card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:11px 12px 9px;position:relative;overflow:hidden}
+.comp-card .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.comp-card .val{font-family:var(--mono);font-size:21px;font-weight:700;margin-top:3px}
+.comp-card .chg{font-family:var(--mono);font-size:11.5px;font-weight:600;margin-top:1px}
+.chg.up{color:var(--up)}.chg.dn{color:var(--down)}
+.comp-card svg{position:absolute;right:8px;bottom:8px;opacity:.85}
+
+/* ===== Demand signals ===== */
+.signals{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-webkit-overflow-scrolling:touch}
+.signals::-webkit-scrollbar{display:none}
+.sig{flex:0 0 auto;background:var(--spruce);color:#DDE6D8;border-radius:5px;padding:7px 12px;font-size:11.5px;display:flex;gap:7px;align-items:center}
+.sig b{color:#fff}
+.sig .hot{color:var(--crayon);font-weight:800;letter-spacing:.05em;font-size:10px}
+
+/* ===== Filters ===== */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.search{flex:1 1 220px;position:relative}
+.search input{width:100%;padding:10px 12px 10px 34px;border:1.5px solid var(--line);border-radius:6px;font-size:14px;background:var(--card);color:var(--ink)}
+.search input:focus{outline:2px solid var(--crayon);outline-offset:-1px;border-color:transparent}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%)}
+select{padding:9px 28px 9px 10px;border:1.5px solid var(--line);border-radius:6px;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235A6052' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 9px center;font-size:13px;color:var(--ink);appearance:none;-webkit-appearance:none}
+select:focus{outline:2px solid var(--crayon);outline-offset:-1px}
+.result-n{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin-left:auto;white-space:nowrap}
+
+/* ===== Board table ===== */
+.board{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.bh{display:grid;grid-template-columns:minmax(0,2.4fr) .9fr .9fr .8fr .9fr .7fr;gap:8px;padding:9px 14px;background:#F6F6F1;border-bottom:1px solid var(--line);font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.bh span:nth-child(n+2){text-align:right}
+.row{display:grid;grid-template-columns:minmax(0,2.4fr) .9fr .9fr .8fr .9fr .7fr;gap:8px;padding:10px 14px;border-bottom:1px solid #EFEFE8;align-items:center;cursor:pointer;background:transparent;width:100%;border-left:none;border-right:none;border-top:none;text-align:left;font-size:inherit;color:inherit;transition:background .12s}
+.row:hover{background:#FAFAF4}
+.row:focus-visible{outline:2px solid var(--crayon);outline-offset:-2px}
+.row.flash-up{animation:fup 1.1s}.row.flash-dn{animation:fdn 1.1s}
+@keyframes fup{0%{background:var(--up-bg)}100%{background:transparent}}
+@keyframes fdn{0%{background:var(--down-bg)}100%{background:transparent}}
+.r-desc{min-width:0}
+.r-desc .nm{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-desc .mt{font-size:11px;color:var(--ink-soft);font-family:var(--mono)}
+.r-num{font-family:var(--mono);font-size:13.5px;text-align:right;font-weight:600}
+.r-chg{font-family:var(--mono);font-size:12px;text-align:right;font-weight:700}
+.r-chg.up{color:var(--up)}.r-chg.dn{color:var(--down)}.r-chg.fl{color:var(--ink-soft)}
+.r-spark{display:flex;justify-content:flex-end}
+.r-conf{text-align:right}
+.conf-pill{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.06em;padding:3px 7px;border-radius:3px;text-transform:uppercase}
+.conf-hi{background:var(--up-bg);color:var(--up)}
+.conf-md{background:#FBEAD6;color:#B25A08}
+.conf-lo{background:#EEEEE6;color:var(--ink-soft)}
+.r-prints{font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-align:right}
+.load-more{display:block;width:100%;padding:14px;background:#F6F6F1;border:none;font-size:13px;font-weight:600;color:var(--spruce)}
+.load-more:hover{background:#EFEFE6}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:14px}
+
+/* mobile board -> cards */
+@media(max-width:680px){
+  .bh{display:none}
+  .row{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;row-gap:4px;padding:12px 14px}
+  .r-desc{grid-column:1;grid-row:1}
+  .r-num{grid-column:2;grid-row:1;font-size:15px}
+  .r-chg{grid-column:2;grid-row:2}
+  .r-spark{grid-column:1;grid-row:2;justify-content:flex-start}
+  .r-conf,.r-prints{display:none}
+}
+
+/* ===== Detail drawer ===== */
+.scrim{position:fixed;inset:0;background:rgba(26,32,24,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;z-index:61;background:var(--card);right:0;top:0;bottom:0;width:min(430px,100%);transform:translateX(100%);transition:transform .25s ease;overflow-y:auto;box-shadow:-8px 0 30px rgba(20,30,22,.2)}
+.drawer.open{transform:translateX(0)}
+@media(max-width:680px){
+  .drawer{top:auto;left:0;right:0;bottom:0;width:100%;max-height:88vh;border-radius:14px 14px 0 0;transform:translateY(100%)}
+  .drawer.open{transform:translateY(0)}
+}
+.dw-head{padding:18px 18px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
+.dw-head .x{position:absolute;right:12px;top:12px;width:32px;height:32px;border:none;background:#F0F0E8;border-radius:6px;font-size:16px;color:var(--ink-soft)}
+.dw-head h2{font-size:17px;font-weight:700;padding-right:40px}
+.dw-head .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin-top:3px}
+.dw-price{display:flex;align-items:baseline;gap:10px;padding:16px 18px 4px}
+.dw-price .p{font-family:var(--mono);font-size:32px;font-weight:700}
+.dw-price .u{font-size:12px;color:var(--ink-soft)}
+.dw-price .c{font-family:var(--mono);font-size:14px;font-weight:700}
+.dw-chart{padding:8px 18px 14px}
+.dw-sect{padding:0 18px 16px}
+.dw-sect h3{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.print-li{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;padding:7px 0;border-bottom:1px solid #F0F0E8}
+.print-li .who{color:var(--ink-soft)}
+.dw-cta{margin:6px 18px 22px;width:calc(100% - 36px);padding:13px;background:var(--crayon);color:#fff;border:none;border-radius:7px;font-size:14.5px;font-weight:700;letter-spacing:.02em}
+.dw-cta:hover{background:#D2670A}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat{background:#F6F6F1;border-radius:6px;padding:9px 10px}
+.stat .k{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+.stat .v{font-family:var(--mono);font-size:14px;font-weight:700;margin-top:2px}
+
+/* ===== Submit modal ===== */
+.modal{position:fixed;inset:0;z-index:70;display:none;align-items:flex-end;justify-content:center}
+@media(min-width:680px){.modal{align-items:center}}
+.modal.open{display:flex}
+.modal .m-scrim{position:absolute;inset:0;background:rgba(26,32,24,.5)}
+.m-card{position:relative;background:var(--card);width:min(440px,100%);border-radius:14px 14px 0 0;padding:22px 20px 26px;max-height:92vh;overflow-y:auto}
+@media(min-width:680px){.m-card{border-radius:12px}}
+.m-card h2{font-size:18px;font-weight:800;margin-bottom:2px}
+.m-card .m-sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:16px}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px}
+.fld input,.fld select{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:7px;font-size:15px;background:#fff;color:var(--ink)}
+.fld input:focus{outline:2px solid var(--crayon);outline-offset:-1px;border-color:transparent}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{flex:1;padding:10px;border:none;background:#fff;font-size:13px;font-weight:600;color:var(--ink-soft)}
+.seg button.on{background:var(--spruce);color:#fff}
+.m-submit{width:100%;padding:14px;background:var(--crayon);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;margin-top:6px}
+.m-submit:hover{background:#D2670A}
+.m-note{font-size:11px;color:var(--ink-soft);text-align:center;margin-top:10px}
+
+/* ===== FAB & toast ===== */
+.fab{position:fixed;right:16px;bottom:18px;z-index:50;background:var(--crayon);color:#fff;border:none;border-radius:50px;padding:14px 20px;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(232,115,12,.4);display:flex;gap:8px;align-items:center;letter-spacing:.02em}
+.fab:hover{background:#D2670A}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--spruce-deep);color:#fff;padding:12px 18px;border-radius:8px;font-size:13.5px;z-index:80;opacity:0;transition:all .25s;pointer-events:none;border-left:4px solid var(--crayon);max-width:92vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast b{color:#FFC58A}
+
+footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;color:var(--ink-soft);font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-row">
+    <div>
+      <div class="brand">
+        <h1>BOARD<span class="ft">FEET</span></h1>
+        <span class="tag">Live lumber market intelligence</span>
+      </div>
+      <div class="sku-count" id="skuCount">— SKUs tracked · — prints today</div>
+    </div>
+    <div class="live-chip"><span class="live-dot"></span>LIVE MARKET</div>
+  </div>
+</header>
+
+<div class="tape-wrap"><div class="tape" id="tape"></div></div>
+
+<main>
+  <section class="composites" id="composites" aria-label="Market composites"></section>
+
+  <section class="signals" id="signals" aria-label="Demand signals"></section>
+
+  <section class="filters">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#5A6052" stroke-width="1.6"/><path d="M10.5 10.5L14 14" stroke="#5A6052" stroke-width="1.6"/></svg>
+      <input type="search" id="q" placeholder="Search 2x6 SPF, OSB, LVL, cedar…" aria-label="Search SKUs">
+    </div>
+    <select id="fCat" aria-label="Category"><option value="">All categories</option></select>
+    <select id="fSpecies" aria-label="Species"><option value="">All species</option></select>
+    <select id="fRegion" aria-label="Region"><option value="">All regions</option></select>
+    <select id="fSort" aria-label="Sort">
+      <option value="active">Most active</option>
+      <option value="gainers">Top gainers</option>
+      <option value="losers">Top losers</option>
+      <option value="az">A → Z</option>
+      <option value="ph">Price high → low</option>
+    </select>
+    <span class="result-n" id="resultN"></span>
+  </section>
+
+  <section class="board" aria-label="Price board">
+    <div class="bh"><span>Product</span><span>Last</span><span>Change</span><span>24h</span><span>Confidence</span><span>Prints</span></div>
+    <div id="rows"></div>
+    <button class="load-more" id="more" style="display:none">Show more SKUs</button>
+    <div class="empty" id="empty" style="display:none">No SKUs match those filters. Clear a filter or widen the search.</div>
+  </section>
+</main>
+
+<button class="fab" id="fabSubmit">
+  <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+  Submit a print
+</button>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="SKU detail"></aside>
+
+<div class="modal" id="modal">
+  <div class="m-scrim" id="mScrim"></div>
+  <div class="m-card">
+    <h2>Submit a print</h2>
+    <p class="m-sub">Report a transacted price. Verified prints update the live board for everyone.</p>
+    <div class="fld"><label>I am the</label>
+      <div class="seg" id="roleSeg">
+        <button type="button" class="on" data-role="Buyer">Buyer</button>
+        <button type="button" data-role="Seller">Seller</button>
+      </div>
+    </div>
+    <div class="fld"><label for="mSku">Product</label><input id="mSku" placeholder="e.g. 2x6 #2 SPF KD 16'" list="skuList"><datalist id="skuList"></datalist></div>
+    <div class="fld"><label for="mPrice">Price</label><input id="mPrice" type="number" inputmode="decimal" placeholder="485.00"></div>
+    <div class="fld"><label for="mQty">Quantity</label><input id="mQty" placeholder="e.g. 2 truckloads / 4 MBF"></div>
+    <div class="fld"><label for="mZip">Ship-to ZIP</label><input id="mZip" inputmode="numeric" placeholder="97058"></div>
+    <button class="m-submit" id="mGo">Post to the board</button>
+    <p class="m-note">Prints are anonymized and aggregated. Invoice-verified prints carry more weight.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>BOARDFEET demo build · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   BOARDFEET demo — single-file, no server, no dependencies.
+   All data simulated client-side.
+   ============================================================ */
+
+// ---------- RNG (seeded for stable demo) ----------
+let _s = 42;
+function rnd(){ _s = (_s * 1664525 + 1013904223) % 4294967296; return _s / 4294967296; }
+function rr(a,b){ return a + rnd()*(b-a); }
+function ri(a,b){ return Math.floor(rr(a,b+1)); }
+function pick(arr){ return arr[Math.floor(rnd()*arr.length)]; }
+
+// ---------- Catalog generation ----------
+const REGIONS = ["PNW","Inland","SoCal","Texas","Southeast","Midwest","Northeast"];
+const SKUS = [];
+let _id = 0;
+
+function addSku(o){
+  o.id = _id++;
+  o.base = o.price;
+  o.prev = o.price;
+  o.prints = ri(2,38);
+  o.lastTs = Date.now() - ri(0, 6*3600*1000);
+  o.hist = null; // lazy
+  SKUS.push(o);
+}
+
+function priceJitterRegion(region){
+  const adj = {PNW:1.0,Inland:0.97,SoCal:1.07,Texas:0.96,Southeast:0.93,Midwest:1.01,Northeast:1.06};
+  return adj[region] * rr(0.985,1.015);
+}
+
+(function buildCatalog(){
+  // --- Dimension lumber ---
+  const dimSpecies = [
+    {s:"SPF",     name:"SPF KD",        b:455},
+    {s:"DF",      name:"DF Green",      b:520},
+    {s:"DF",      name:"DF KD",         b:560},
+    {s:"Hem-Fir", name:"Hem-Fir KD",    b:470},
+    {s:"SYP",     name:"SYP KD",        b:415},
+    {s:"ESLP",    name:"ESLP KD",       b:435}
+  ];
+  const dims = [{d:"2x4",m:0.92},{d:"2x6",m:1.0},{d:"2x8",m:1.06},{d:"2x10",m:1.18},{d:"2x12",m:1.3}];
+  const lens = [{l:"8'",m:1.0},{l:"10'",m:0.99},{l:"12'",m:0.98},{l:"14'",m:1.0},{l:"16'",m:1.04},{l:"18'",m:1.1},{l:"20'",m:1.16}];
+  const grades = [{g:"#1",m:1.13},{g:"#2",m:1.0},{g:"#3",m:0.82}];
+  for(const sp of dimSpecies) for(const d of dims) for(const L of lens) for(const g of grades) for(const rg of REGIONS){
+    addSku({cat:"Dimension", species:sp.s, region:rg, unit:"$/MBF",
+      name:`${d.d} ${g.g} ${sp.name} ${L.l}`,
+      price: Math.round(sp.b * d.m * L.m * g.m * priceJitterRegion(rg))});
+  }
+
+  // --- MSR ---
+  const msr = [{g:"1650f",m:1.1},{g:"2100f",m:1.22},{g:"2400f",m:1.34}];
+  for(const sp of [dimSpecies[0],dimSpecies[2]]) for(const d of dims.slice(0,3)) for(const L of lens.slice(2,6)) for(const g of msr) for(const rg of REGIONS){
+    addSku({cat:"MSR", species:sp.s, region:rg, unit:"$/MBF",
+      name:`${d.d} MSR ${g.g} ${sp.name} ${L.l}`,
+      price: Math.round(sp.b * d.m * L.m * g.m * priceJitterRegion(rg))});
+  }
+
+  // --- Studs ---
+  const studLens = ['92-5/8"','104-5/8"','116-5/8"'];
+  for(const sp of ["SPF","DF","Hem-Fir","SYP"]) for(const d of ["2x4","2x6"]) for(const sl of studLens) for(const rg of REGIONS){
+    addSku({cat:"Studs", species:sp, region:rg, unit:"$/MBF",
+      name:`${d} Stud ${sp} ${sl}`,
+      price: Math.round(rr(420,510) * (d==="2x6"?1.05:1) * priceJitterRegion(rg))});
+  }
+
+  // --- Pressure treated ---
+  const ptLens = ["8'","10'","12'","16'","20'"];
+  for(const sp of [{s:"SYP",b:560},{s:"Hem-Fir",b:610}]) for(const d of dims) for(const L of ptLens) for(const rg of REGIONS){
+    addSku({cat:"Treated", species:sp.s, region:rg, unit:"$/MBF",
+      name:`${d.d} ${sp.s} PT .40 Ground Contact ${L}`,
+      price: Math.round(sp.b * d.m * priceJitterRegion(rg))});
+  }
+
+  // --- Cedar ---
+  const cedarItems = [{n:"5/4x6 WRC Decking",b:2350},{n:"2x4 WRC",b:1900},{n:"2x6 WRC",b:2050},{n:"1x6 WRC Fence",b:1450},{n:"4x4 WRC Post",b:2200}];
+  const cedarGrades = [{g:"Clear",m:1.55},{g:"STK",m:1.0},{g:"#2 & Btr",m:0.8}];
+  for(const it of cedarItems) for(const g of cedarGrades) for(const L of ["8'","10'","12'","16'"]) for(const rg of REGIONS){
+    addSku({cat:"Cedar", species:"WRC", region:rg, unit:"$/MBF",
+      name:`${it.n} ${g.g} ${L}`,
+      price: Math.round(it.b * g.m * priceJitterRegion(rg))});
+  }
+
+  // --- Panels ---
+  const panels = [
+    {n:'OSB 7/16" 4x8',b:340},{n:'OSB 1/2" 4x8',b:385},{n:'OSB 5/8" T&G 4x8',b:520},
+    {n:'CDX Plywood 1/2" 4-ply',b:610},{n:'CDX Plywood 5/8" 4x8',b:680},{n:'CDX Plywood 3/4" 4x8',b:760},
+    {n:'Sheathing Ply 15/32" 4x8',b:580},{n:'Sanded AC 3/4" 4x8',b:920}
+  ];
+  for(const p of panels) for(const rg of REGIONS){
+    addSku({cat:"Panels", species: p.n.startsWith("OSB")?"OSB":"Plywood", region:rg, unit:"$/MSF",
+      name:p.n, price: Math.round(p.b * priceJitterRegion(rg))});
+  }
+
+  // --- Engineered ---
+  const eng = [
+    {n:'LVL 1-3/4x9-1/2 2.0E',u:"$/LF",b:6.4},{n:'LVL 1-3/4x11-7/8 2.0E',u:"$/LF",b:8.1},
+    {n:'LVL 1-3/4x14 2.0E',u:"$/LF",b:9.6},{n:'LVL 1-3/4x16 2.0E',u:"$/LF",b:11.2},
+    {n:'I-Joist 9-1/2" PRI-20',u:"$/LF",b:3.4},{n:'I-Joist 11-7/8" PRI-40',u:"$/LF",b:4.2},
+    {n:'I-Joist 14" PRI-50',u:"$/LF",b:5.1},{n:'I-Joist 16" PRI-60',u:"$/LF",b:6.0},
+    {n:'Glulam 3-1/2x9-1/4 24F-V4',u:"$/LF",b:9.8},{n:'Glulam 5-1/8x12 24F-V4',u:"$/LF",b:18.5},
+    {n:'Glulam 6-3/4x13-1/2 24F-V8',u:"$/LF",b:27.0}
+  ];
+  for(const e of eng) for(const rg of REGIONS){
+    addSku({cat:"Engineered", species: e.n.startsWith("LVL")?"LVL":e.n.startsWith("I-")?"I-Joist":"Glulam",
+      region:rg, unit:e.u, name:e.n,
+      price: +(e.b * priceJitterRegion(rg)).toFixed(2)});
+  }
+})();
+
+// per-species market drift (live trend)
+const DRIFT = {};
+(function(){ for(const s of [...new Set(SKUS.map(k=>k.species))]) DRIFT[s] = rr(-0.0012,0.0016); })();
+
+// ---------- History (lazy) ----------
+function hist(sku){
+  if(sku.hist) return sku.hist;
+  const h=[]; let p = sku.base * rr(0.96,1.04);
+  for(let i=0;i<24;i++){ p *= 1 + rr(-0.012,0.012) + (sku.price>sku.base?0.0015:-0.0015); h.push(p); }
+  h[23] = sku.price;
+  sku.hist = h;
+  return h;
+}
+
+// ---------- Formatting ----------
+function fmt(sku, p=sku.price){
+  return sku.unit==="$/LF" ? "$"+p.toFixed(2) : "$"+Math.round(p).toLocaleString();
+}
+function chgPct(sku){ return (sku.price - sku.base)/sku.base*100; }
+function ago(ts){
+  const m = Math.max(1,Math.round((Date.now()-ts)/60000));
+  if(m<60) return m+"m ago";
+  const h = Math.round(m/60);
+  return h<24 ? h+"h ago" : Math.round(h/24)+"d ago";
+}
+
+// ---------- Sparkline ----------
+function spark(sku, w=64, h=22, sw=1.5){
+  const d = hist(sku);
+  const mn = Math.min(...d), mx = Math.max(...d), rg = (mx-mn)||1;
+  const pts = d.map((v,i)=>`${(i/(d.length-1)*w).toFixed(1)},${(h-2-(v-mn)/rg*(h-4)).toFixed(1)}`).join(" ");
+  const col = d[d.length-1] >= d[0] ? "var(--up)" : "var(--down)";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;
+}
+
+// ---------- Composites ----------
+const COMPS = [
+  {lbl:"SPF Composite",   f:k=>k.species==="SPF"&&k.cat==="Dimension"},
+  {lbl:"DF Composite",    f:k=>k.species==="DF"&&k.cat==="Dimension"},
+  {lbl:"SYP Composite",   f:k=>k.species==="SYP"&&k.cat==="Dimension"},
+  {lbl:"Stud Composite",  f:k=>k.cat==="Studs"},
+  {lbl:"OSB Composite",   f:k=>k.species==="OSB"},
+  {lbl:"Framing Composite",f:k=>k.cat==="Dimension"&&k.name.includes("#2")}
+];
+function compVal(c){
+  let s=0,b=0,n=0;
+  for(const k of SKUS){ if(c.f(k)){ s+=k.price; b+=k.base; n++; } }
+  return {v:s/n, c:(s-b)/b*100};
+}
+function renderComposites(){
+  const el = document.getElementById("composites");
+  el.innerHTML = COMPS.map(c=>{
+    const {v,c:ch} = compVal(c);
+    const up = ch>=0;
+    // mini composite spark from a representative sku
+    const rep = SKUS.find(c.f);
+    return `<div class="comp-card">
+      <div class="lbl">${c.lbl}</div>
+      <div class="val">$${Math.round(v).toLocaleString()}</div>
+      <div class="chg ${up?"up":"dn"}">${up?"▲":"▼"} ${Math.abs(ch).toFixed(1)}%</div>
+      ${spark(rep,54,20,1.3)}
+    </div>`;
+  }).join("");
+}
+
+// ---------- Demand signals ----------
+function renderSignals(){
+  const hot = [
+    {t:`<b>2x6 #2 DF Green 16'</b> inquiry vol`, v:"+34% · PNW", hot:1},
+    {t:`<b>OSB 7/16"</b> stockout pings`, v:"6 yards · SoCal"},
+    {t:`<b>SYP PT 2x10</b> RFQ flow`, v:"+18% · Southeast"},
+    {t:`<b>LVL 11-7/8</b> forward-buy interest`, v:"3 wk out · Texas"},
+    {t:`<b>Stud SPF 92-5/8"</b> lost-bid reports`, v:"avg −$14 vs board"},
+    {t:`<b>WRC 5/4x6 Decking</b> watchlist adds`, v:"+41 this wk", hot:1}
+  ];
+  document.getElementById("signals").innerHTML =
+    `<div class="sig"><span class="hot">DEMAND SIGNALS</span></div>` +
+    hot.map(s=>`<div class="sig">${s.hot?'<span class="hot">HOT</span>':''}<span>${s.t}</span><b>${s.v}</b></div>`).join("");
+}
+
+// ---------- Filters & board ----------
+const elRows = document.getElementById("rows");
+const elMore = document.getElementById("more");
+const elEmpty = document.getElementById("empty");
+let filtered = [], shown = 0;
+const PAGE = 60;
+const visibleRowEls = new Map(); // skuId -> element
+
+function populateFilters(){
+  const cats = [...new Set(SKUS.map(k=>k.cat))];
+  const specs = [...new Set(SKUS.map(k=>k.species))].sort();
+  document.getElementById("fCat").innerHTML += cats.map(c=>`<option>${c}</option>`).join("");
+  document.getElementById("fSpecies").innerHTML += specs.map(s=>`<option>${s}</option>`).join("");
+  document.getElementById("fRegion").innerHTML += REGIONS.map(r=>`<option>${r}</option>`).join("");
+}
+
+function applyFilters(){
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const cat = document.getElementById("fCat").value;
+  const sp = document.getElementById("fSpecies").value;
+  const rg = document.getElementById("fRegion").value;
+  const sort = document.getElementById("fSort").value;
+  const terms = q.split(/\s+/).filter(Boolean);
+  filtered = SKUS.filter(k=>{
+    if(cat && k.cat!==cat) return false;
+    if(sp && k.species!==sp) return false;
+    if(rg && k.region!==rg) return false;
+    if(terms.length){
+      const hay = (k.name+" "+k.species+" "+k.cat+" "+k.region).toLowerCase();
+      for(const t of terms) if(!hay.includes(t)) return false;
+    }
+    return true;
+  });
+  if(sort==="active") filtered.sort((a,b)=>b.lastTs-a.lastTs);
+  else if(sort==="gainers") filtered.sort((a,b)=>chgPct(b)-chgPct(a));
+  else if(sort==="losers") filtered.sort((a,b)=>chgPct(a)-chgPct(b));
+  else if(sort==="az") filtered.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sort==="ph") filtered.sort((a,b)=>b.price-a.price);
+  shown = 0;
+  elRows.innerHTML = "";
+  visibleRowEls.clear();
+  renderMore();
+  document.getElementById("resultN").textContent = filtered.length.toLocaleString()+" SKUs";
+  elEmpty.style.display = filtered.length? "none":"block";
+}
+
+function confPill(k){
+  const ageH = (Date.now()-k.lastTs)/3600000;
+  if(k.prints>=12 && ageH<6) return `<span class="conf-pill conf-hi">High</span>`;
+  if(k.prints>=5) return `<span class="conf-pill conf-md">Med</span>`;
+  return `<span class="conf-pill conf-lo">Thin</span>`;
+}
+
+function rowHtml(k){
+  const ch = chgPct(k);
+  const cls = ch>0.05?"up":ch<-0.05?"dn":"fl";
+  const sym = ch>0.05?"▲":ch<-0.05?"▼":"–";
+  return `<div class="r-desc"><div class="nm">${k.name}</div><div class="mt">${k.region} · ${k.cat} · ${ago(k.lastTs)}</div></div>
+    <div class="r-num">${fmt(k)}<div style="font-size:9.5px;font-weight:400;color:var(--ink-soft)">${k.unit}</div></div>
+    <div class="r-chg ${cls}">${sym} ${Math.abs(ch).toFixed(1)}%</div>
+    <div class="r-spark">${spark(k)}</div>
+    <div class="r-conf">${confPill(k)}</div>
+    <div class="r-prints">${k.prints}</div>`;
+}
+
+function renderMore(){
+  const frag = document.createDocumentFragment();
+  const end = Math.min(shown+PAGE, filtered.length);
+  for(let i=shown;i<end;i++){
+    const k = filtered[i];
+    const b = document.createElement("button");
+    b.className = "row";
+    b.dataset.id = k.id;
+    b.innerHTML = rowHtml(k);
+    b.addEventListener("click", ()=>openDrawer(k));
+    frag.appendChild(b);
+    visibleRowEls.set(k.id, b);
+  }
+  elRows.appendChild(frag);
+  shown = end;
+  elMore.style.display = shown<filtered.length ? "block":"none";
+  elMore.textContent = `Show more SKUs (${(filtered.length-shown).toLocaleString()} remaining)`;
+}
+elMore.addEventListener("click", renderMore);
+
+["q","fCat","fSpecies","fRegion","fSort"].forEach(id=>{
+  document.getElementById(id).addEventListener(id==="q"?"input":"change", applyFilters);
+});
+
+// ---------- Tape ----------
+const tapeEl = document.getElementById("tape");
+const tapeItems = [];
+function tapeItemHtml(t){
+  return `<span class="tape-item">${t.fresh?'<span class="t-new">NEW PRINT</span>':''}<b>${t.name}</b><span>${t.region}</span><span>${t.price}</span><span class="${t.up?"t-up":"t-dn"}">${t.up?"▲":"▼"}${t.pct}%</span><span style="opacity:.6">${t.qty}</span></span>`;
+}
+function renderTape(){
+  const half = tapeItems.map(tapeItemHtml).join("");
+  tapeEl.innerHTML = half + half; // duplicate for seamless loop
+}
+function pushTape(t){
+  tapeItems.unshift(t);
+  if(tapeItems.length>18) tapeItems.pop();
+  renderTape();
+}
+
+// ---------- Live simulation ----------
+let printsToday = ri(1100,1400);
+const QTYS = ["1 unit","2 units","½ TL","1 TL","2 TL","4 MBF","8 MBF","12 MBF","1 railcar"];
+
+function tickSku(k, fromUser=false, userPrice=null){
+  k.prev = k.price;
+  const drift = DRIFT[k.species] || 0;
+  let np;
+  if(fromUser && userPrice){ np = k.price*0.7 + userPrice*0.3; }
+  else { np = k.price * (1 + drift + rr(-0.006,0.006)); }
+  k.price = k.unit==="$/LF" ? +np.toFixed(2) : Math.round(np);
+  k.prints++; printsToday++;
+  k.lastTs = Date.now();
+  if(k.hist){ k.hist.push(k.price); if(k.hist.length>24) k.hist.shift(); }
+  const up = k.price>=k.prev;
+  pushTape({name:k.name, region:k.region, price:fmt(k), up,
+    pct:Math.abs((k.price-k.prev)/k.prev*100).toFixed(1), qty:pick(QTYS), fresh:fromUser});
+  // update visible row
+  const el = visibleRowEls.get(k.id);
+  if(el){
+    el.innerHTML = rowHtml(k);
+    el.classList.remove("flash-up","flash-dn");
+    void el.offsetWidth;
+    el.classList.add(up?"flash-up":"flash-dn");
+  }
+  updateCount();
+}
+
+function updateCount(){
+  document.getElementById("skuCount").textContent =
+    SKUS.length.toLocaleString()+" SKUs tracked · "+printsToday.toLocaleString()+" prints today";
+}
+
+let simTimer;
+function simLoop(){
+  // bias toward currently visible/filtered skus so the board feels alive
+  const pool = (filtered.length && rnd()<0.65) ? filtered.slice(0, Math.min(filtered.length, 200)) : SKUS;
+  tickSku(pool[Math.floor(rnd()*pool.length)]);
+  if(rnd()<0.25) renderComposites();
+  simTimer = setTimeout(simLoop, rr(1400,3800));
+}
+
+// ---------- Drawer ----------
+const drawer = document.getElementById("drawer");
+const scrim = document.getElementById("scrim");
+let drawerSku = null;
+
+function bigChart(k){
+  const d = hist(k), w=380, h=120;
+  const mn=Math.min(...d), mx=Math.max(...d), rg=(mx-mn)||1;
+  const pts = d.map((v,i)=>`${(i/(d.length-1)*w).toFixed(1)},${(h-6-(v-mn)/rg*(h-14)).toFixed(1)}`).join(" ");
+  const up = d[d.length-1]>=d[0];
+  const col = up?"var(--up)":"var(--down)";
+  const fillPts = `0,${h} ${pts} ${w},${h}`;
+  return `<svg width="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="display:block">
+    <polygon points="${fillPts}" fill="${up?"rgba(47,125,77,.1)":"rgba(190,61,42,.1)"}"/>
+    <polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+  <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink-soft);margin-top:3px"><span>24h ago</span><span>now</span></div>`;
+}
+
+function fakePrints(k){
+  const out=[]; let t=Date.now();
+  for(let i=0;i<6;i++){
+    t -= ri(8,90)*60000;
+    const p = k.price * rr(0.985,1.015);
+    out.push({t, p: k.unit==="$/LF"? +p.toFixed(2): Math.round(p),
+      who: pick(["Verified buyer","Verified seller","Buyer","Seller","Invoice-verified"]),
+      qty: pick(QTYS)});
+  }
+  return out;
+}
+
+function openDrawer(k){
+  drawerSku = k;
+  const ch = chgPct(k);
+  const up = ch>=0;
+  const d = hist(k);
+  drawer.innerHTML = `
+    <div class="dw-head">
+      <button class="x" id="dwX" aria-label="Close">✕</button>
+      <h2>${k.name}</h2>
+      <div class="sub">${k.region} · ${k.cat} · ${k.species} · last print ${ago(k.lastTs)}</div>
+    </div>
+    <div class="dw-price">
+      <span class="p">${fmt(k)}</span><span class="u">${k.unit}</span>
+      <span class="c ${up?"up":"dn"}" style="color:var(--${up?"up":"down"})">${up?"▲":"▼"} ${Math.abs(ch).toFixed(1)}%</span>
+    </div>
+    <div class="dw-chart">${bigChart(k)}</div>
+    <div class="dw-sect">
+      <div class="stat-grid">
+        <div class="stat"><div class="k">24h High</div><div class="v">${fmt(k,Math.max(...d))}</div></div>
+        <div class="stat"><div class="k">24h Low</div><div class="v">${fmt(k,Math.min(...d))}</div></div>
+        <div class="stat"><div class="k">Prints</div><div class="v">${k.prints}</div></div>
+      </div>
+    </div>
+    <div class="dw-sect">
+      <h3>Recent prints — anonymized</h3>
+      ${fakePrints(k).map(p=>`<div class="print-li"><span>${fmt(k,p.p)} <span class="who">· ${p.qty}</span></span><span class="who">${p.who} · ${ago(p.t)}</span></div>`).join("")}
+    </div>
+    <button class="dw-cta" id="dwSubmit">Submit a print for this SKU</button>`;
+  drawer.classList.add("open");
+  scrim.classList.add("open");
+  document.getElementById("dwX").addEventListener("click", closeDrawer);
+  document.getElementById("dwSubmit").addEventListener("click", ()=>{ closeDrawer(); openModal(k); });
+}
+function closeDrawer(){ drawer.classList.remove("open"); scrim.classList.remove("open"); drawerSku=null; }
+scrim.addEventListener("click", closeDrawer);
+
+// ---------- Submit modal ----------
+const modal = document.getElementById("modal");
+let modalRole = "Buyer";
+document.getElementById("roleSeg").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  modalRole = b.dataset.role;
+  document.querySelectorAll("#roleSeg button").forEach(x=>x.classList.toggle("on", x===b));
+});
+function openModal(k){
+  modal.classList.add("open");
+  document.getElementById("mSku").value = k? `${k.name} — ${k.region}`:"";
+  document.getElementById("mPrice").value = k? (k.unit==="$/LF"?k.price.toFixed(2):k.price):"";
+  modal._sku = k || null;
+}
+function closeModal(){ modal.classList.remove("open"); }
+document.getElementById("mScrim").addEventListener("click", closeModal);
+document.getElementById("fabSubmit").addEventListener("click", ()=>openModal(null));
+
+// datalist for quick demo entry
+(function(){
+  const dl = document.getElementById("skuList");
+  const sample = [];
+  for(let i=0;i<400;i+=7) sample.push(SKUS[i*13 % SKUS.length]);
+  dl.innerHTML = sample.slice(0,60).map(k=>`<option value="${k.name} — ${k.region}">`).join("");
+})();
+
+document.getElementById("mGo").addEventListener("click", ()=>{
+  const priceIn = parseFloat(document.getElementById("mPrice").value);
+  let k = modal._sku;
+  if(!k){
+    const txt = document.getElementById("mSku").value.toLowerCase();
+    k = SKUS.find(s=>txt.includes(s.name.toLowerCase())) || pick(SKUS);
+  }
+  closeModal();
+  if(!isNaN(priceIn) && priceIn>0) tickSku(k, true, priceIn);
+  else tickSku(k, true, null);
+  toast(`Print posted: <b>${k.name}</b> · ${k.region}. Board updated for ${ri(40,220)} watchers.`);
+});
+
+function toast(html){
+  const t = document.getElementById("toast");
+  t.innerHTML = html;
+  t.classList.add("show");
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>t.classList.remove("show"), 3400);
+}
+
+// esc to close
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape"){ closeDrawer(); closeModal(); }
+});
+
+// ---------- Boot ----------
+populateFilters();
+applyFilters();
+renderComposites();
+renderSignals();
+updateCount();
+// seed the tape
+for(let i=0;i<14;i++){
+  const k = pick(SKUS);
+  const up = rnd()>0.45;
+  pushTape({name:k.name, region:k.region, price:fmt(k), up, pct:rr(0.1,2.4).toFixed(1), qty:pick(QTYS)});
+}
+simLoop();
+</script>
+</body>
+</html>
