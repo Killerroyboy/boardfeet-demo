@@ -314,6 +314,11 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 .phone .bub{background:#E9E9EB;border-radius:12px;padding:9px 11px;line-height:1.5;color:#111}
 .phone .bub b{font-weight:700}
 .phone .tm{text-align:center;font-size:9px;color:#8E8E93;margin-bottom:7px}
+/* quick print chips */
+.qp{display:flex;gap:7px;flex-wrap:wrap}
+.qp button{font-family:var(--mono);font-size:13px;font-weight:800;padding:9px 0;border-radius:6px;border:1.5px solid var(--line);background:#fff;color:var(--ink);flex:1;min-width:52px}
+.qp button:hover{border-color:var(--crayon);color:#B25A08}
+.qp .qp-nc{background:#F6F6F1}
 
 #printReport{display:none}
 @media print{
@@ -332,6 +337,17 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
   .pr-up::before{content:"▲ "}.pr-dn::before{content:"▼ "}
   .pr-note{font-size:8pt;color:#444;margin-top:14px;border-top:1px solid #999;padding-top:6px}
   .pr-two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .pr-fob{font-size:8.5pt;text-align:center;margin:2px 0 10px;font-style:italic}
+  .pr-three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .pr-chgbox{border:1.2px solid #000;padding:6px 8px;margin-bottom:14px}
+  .pr-chgbox h3{font-family:Arial,sans-serif;font-size:9pt;margin-bottom:4px}
+  .pr-mx{width:100%;border-collapse:collapse;font-size:8pt}
+  .pr-mx th{font-family:Arial,sans-serif;font-size:7pt;text-transform:uppercase;letter-spacing:.03em;border-bottom:1.2px solid #000;padding:2px 4px;text-align:right}
+  .pr-mx th:first-child,.pr-mx td:first-child{text-align:left}
+  .pr-mx td{padding:2.5px 4px;border-bottom:.4px solid #bbb;text-align:right;font-variant-numeric:tabular-nums}
+  .pr-mx .grp td{border-bottom:1px solid #000;font-weight:bold;font-family:Arial,sans-serif;font-size:7.5pt;padding-top:6px}
+  .pr-comment{font-size:9.5pt;line-height:1.45;column-count:2;column-gap:18px;text-align:justify}
+  .pr-sechead{font-family:Arial,sans-serif;font-size:12pt;font-weight:800;text-align:center;letter-spacing:.06em;margin:10px 0 2px}
 }
 </style>
 </head>
@@ -632,7 +648,7 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 
 <div class="toast" id="toast"></div>
 
-<footer>BOARDFEET demo build v6 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+<footer>BOARDFEET demo build v7 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
 
 <script>
 "use strict";
@@ -1040,6 +1056,16 @@ function openDrawer(k){
       <h3>Desk chatter</h3>
       ${deskChatter(k)}
     </div>
+    <div class="dw-sect">
+      <h3>Quick print — confirm or mark the change</h3>
+      <div class="qp">
+        <button class="qp-nc" data-d="0">NC</button>
+        <button data-d="5">+5</button>
+        <button data-d="10">+10</button>
+        <button data-d="-5">−5</button>
+        <button data-d="-10">−10</button>
+      </div>
+    </div>
     <button class="share-btn" id="dwShare">Share price card 📤</button>
     <button class="dw-cta" id="dwSubmit">Submit a print for this SKU</button>`;
   drawer.classList.add("open");
@@ -1047,6 +1073,17 @@ function openDrawer(k){
   document.getElementById("dwX").addEventListener("click", closeDrawer);
   document.getElementById("dwSubmit").addEventListener("click", ()=>{ closeDrawer(); openModal(k); });
   document.getElementById("dwShare").addEventListener("click", ()=>openShareCard(k));
+  drawer.querySelectorAll(".qp button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const delta = parseFloat(b.dataset.d);
+      const np = k.unit==="$/LF" ? +(k.price+delta/100).toFixed(2) : k.price + delta;
+      closeDrawer();
+      tickSku(k, true, np);
+      toast(delta===0
+        ? `<b>NC confirmed</b> at ${fmt(k)} — ${k.name}. Confirmation prints raise confidence too.`
+        : `Print posted: <b>${k.name}</b> ${delta>0?"+":""}$${Math.abs(delta)} → ${fmt(k)}. Two taps, done.`);
+    });
+  });
 }
 function closeDrawer(){ drawer.classList.remove("open"); scrim.classList.remove("open"); drawerSku=null; }
 scrim.addEventListener("click", closeDrawer);
@@ -1250,49 +1287,116 @@ function renderBuySignal(){
   document.getElementById("kAlerts").textContent = Math.max(1,Math.min(9,Math.round(n/14)));
 }
 
-// ---------- Print report ----------
+// ---------- Print report (Lumber Price Guide format) ----------
+function avgP(dim, grade, sp, region){
+  const pre = `${dim} ${grade} ${sp}`;
+  let s=0,n=0,b=0;
+  for(const k of SKUS){ if(k.region===region && k.cat==="Dimension" && k.name.startsWith(pre)){ s+=k.price; b+=k.base; n++; } }
+  return n? {p:Math.round(s/n), c:Math.round((s-b)/n/5)*5} : null;
+}
+function chgFmt(c){ return c===0?"NC":(c>0?"+":"\u2212")+Math.abs(c); }
 function buildPrintReport(){
   const d = new Date();
-  const dateStr = d.toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
-  const timeStr = d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
-  // composites
-  const compRows = COMPS.map(c=>{ const {v,c:ch} = compVal(c);
-    return `<tr><td>${c.lbl}</td><td>$${Math.round(v).toLocaleString()}</td><td class="${ch>=0?"pr-up":"pr-dn"}">${Math.abs(ch).toFixed(1)}%</td></tr>`; }).join("");
-  // movers among #2 dimension
-  const pool = SKUS.filter(k=>k.cat==="Dimension"&&k.name.includes("#2"));
-  const sorted = [...pool].sort((a,b)=>chgPct(b)-chgPct(a));
-  const movRow = k=>`<tr><td>${k.name} · ${k.region}</td><td>${fmt(k)}</td><td class="${chgPct(k)>=0?"pr-up":"pr-dn"}">${Math.abs(chgPct(k)).toFixed(1)}%</td><td>${k.prints}</td></tr>`;
-  const gain = sorted.slice(0,8).map(movRow).join("");
-  const lose = sorted.slice(-8).reverse().map(movRow).join("");
-  // regional matrix: 2x4 #2 16' by species
-  const matSpecies = ["SPF KD","DF Green","Hem-Fir KD","SYP KD"];
-  const matRows = matSpecies.map(sp=>{
-    const cells = REGIONS.map(rg=>{
-      const s = SKUS.find(k=>k.region===rg && k.name===`2x4 #2 ${sp} 16'`);
-      return `<td>${s?("$"+s.price.toLocaleString()):"—"}</td>`;
-    }).join("");
-    return `<tr><td>2x4 #2 ${sp} 16'</td>${cells}</tr>`;
+  const dateStr = d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+  const SP = [["SPF KD","SPF"],["DF KD","DF KD"],["DF Green","DF Grn"],["Hem-Fir KD","Hem-Fir"],["SYP KD","SYP"],["ESLP KD","ESLP"]];
+  const DIMS = ["2x4","2x6","2x8","2x10","2x12"];
+
+  // --- weekly changes box: 3 column groups ---
+  function chgGroup(title, rows){
+    return `<div><h3>${title}</h3><table class="pr-mx"><thead><tr><th></th><th>This Wk</th><th>Chg</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+  const g1 = SP.map(([sp,lbl])=>{ const a=avgP("2x4","#2",sp,"PNW"); return a?`<tr><td>${lbl} 2x4 #2&Btr</td><td>${a.p}</td><td>${chgFmt(a.c)}</td></tr>`:""; }).join("");
+  const studRows = ["SPF","DF","Hem-Fir","SYP"].map(sp=>{
+    const f = SKUS.filter(k=>k.cat==="Studs"&&k.species===sp&&k.region==="PNW"&&k.name.includes("2x4"));
+    if(!f.length) return "";
+    const p = Math.round(f.reduce((s,k)=>s+k.price,0)/f.length);
+    const c = Math.round(f.reduce((s,k)=>s+(k.price-k.base),0)/f.length/5)*5;
+    return `<tr><td>${sp} 2x4 Stud</td><td>${p}</td><td>${chgFmt(c)}</td></tr>`;
   }).join("");
+  const panRows = SKUS.filter(k=>k.cat==="Panels"&&k.region==="PNW").slice(0,6).map(k=>{
+    const c = Math.round((k.price-k.base)/5)*5;
+    return `<tr><td>${k.name.replace(' 4x8','')}</td><td>${k.price}</td><td>${chgFmt(c)}</td></tr>`;
+  }).join("");
+
+  // --- KD dimension matrix for a region ---
+  function kdMatrix(region){
+    const head = `<tr><th>Random</th>${SP.map(s=>`<th>${s[1]}</th>`).join("")}</tr>`;
+    let body = "";
+    for(const [grade,glbl] of [["#1","#1&Btr"],["#2","#2&Btr"],["#3","#3/Util"]]){
+      body += `<tr class="grp"><td colspan="${SP.length+1}">${glbl}</td></tr>`;
+      for(const dim of DIMS){
+        body += `<tr><td>${dim}</td>${SP.map(([sp])=>{ const a=avgP(dim,grade,sp,region); return `<td>${a?a.p.toLocaleString():"\u2014"}</td>`; }).join("")}</tr>`;
+      }
+    }
+    return `<table class="pr-mx"><thead>${head}</thead><tbody>${body}</tbody></table>`;
+  }
+
+  // --- studs matrix ---
+  const studLens2 = ['92-5/8"','104-5/8"','116-5/8"'];
+  const studMx = `<table class="pr-mx"><thead><tr><th>Trim-end</th>${["SPF","DF","Hem-Fir","SYP"].map(s=>`<th>${s}</th>`).join("")}</tr></thead><tbody>${
+    studLens2.map(sl=>`<tr><td>2x4 ${sl}</td>${["SPF","DF","Hem-Fir","SYP"].map(sp=>{
+      const k = SKUS.find(x=>x.cat==="Studs"&&x.region==="PNW"&&x.species===sp&&x.name===`2x4 Stud ${sp} ${sl}`);
+      return `<td>${k?k.price.toLocaleString():"\u2014"}</td>`;}).join("")}</tr>`).join("")
+  }</tbody></table>`;
+
+  // --- panels matrix across regions ---
+  const panNames = [...new Set(SKUS.filter(k=>k.cat==="Panels").map(k=>k.name))];
+  const panMx = `<table class="pr-mx"><thead><tr><th>$/MSF</th>${REGIONS.map(r=>`<th>${r}</th>`).join("")}</tr></thead><tbody>${
+    panNames.map(nm=>`<tr><td>${nm.replace(' 4x8','')}</td>${REGIONS.map(rg=>{
+      const k = SKUS.find(x=>x.cat==="Panels"&&x.region===rg&&x.name===nm);
+      return `<td>${k?k.price.toLocaleString():"\u2014"}</td>`;}).join("")}</tr>`).join("")
+  }</tbody></table>`;
+
+  // --- cedar ---
+  const cedarNames = [...new Set(SKUS.filter(k=>k.cat==="Cedar").map(k=>k.name.replace(/ (Clear|STK|#2 & Btr) .*$/,"")))].slice(0,5);
+  const cedarMx = `<table class="pr-mx"><thead><tr><th>S1S2E, RL</th><th>Clear</th><th>STK</th><th>#2&Btr</th></tr></thead><tbody>${
+    cedarNames.map(nm=>`<tr><td>${nm}</td>${["Clear","STK","#2 & Btr"].map(g=>{
+      const f = SKUS.filter(x=>x.cat==="Cedar"&&x.region==="PNW"&&x.name.startsWith(nm)&&x.name.includes(g));
+      const p = f.length?Math.round(f.reduce((s,k)=>s+k.price,0)/f.length):null;
+      return `<td>${p?p.toLocaleString():"\u2014"}</td>`;}).join("")}</tr>`).join("")
+  }</tbody></table>`;
+
+  // --- commentary from live state ---
+  const fr = compVal(COMPS[5]);
+  const pool = SKUS.filter(k=>k.cat==="Dimension"&&k.name.includes("#2"));
+  const top = [...pool].sort((a,b)=>chgPct(b)-chgPct(a))[0];
+  const firmSoft = fr.c>=0.3?"firmed":fr.c<=-0.3?"softened":"held largely steady";
+  const commentary =
+    `Framing lumber ${firmSoft} on the week, with the composite at $${Math.round(fr.v).toLocaleString()} (${fr.c>=0?"+":""}${fr.c.toFixed(1)}%). `+
+    `${top.name} in the ${top.region} led the move at ${chgPct(top)>=0?"+":""}${chgPct(top).toFixed(1)}%. `+
+    `Inquiry volume on Coast green Fir items continued to outpace offerings, and order files among several producers stretched into the following month. `+
+    `Field inventories remained lean; buyers reported difficulty shaking discounts loose on narrow widths. `+
+    `${printsToday.toLocaleString()} prints were posted to the board today across ${SKUS.length.toLocaleString()} tracked items.`;
+
   document.getElementById("printReport").innerHTML = `
-    <div class="pr-head"><h1>BOARDFEET<span style="font-weight:400"> · Daily Market Report</span></h1><div class="pr-date">${dateStr} · ${timeStr} · ${printsToday.toLocaleString()} prints today</div></div>
-    <div class="pr-sect"><h2>Composites</h2>
-      <table class="pr-table"><thead><tr><th>Index</th><th>Level ($/MBF)</th><th>Change</th></tr></thead><tbody>${compRows}</tbody></table></div>
-    <div class="pr-two">
-      <div class="pr-sect"><h2>Top gainers — #2 dimension</h2>
-        <table class="pr-table"><thead><tr><th>SKU · Region</th><th>Last</th><th>Chg</th><th>Prints</th></tr></thead><tbody>${gain}</tbody></table></div>
-      <div class="pr-sect"><h2>Top decliners — #2 dimension</h2>
-        <table class="pr-table"><thead><tr><th>SKU · Region</th><th>Last</th><th>Chg</th><th>Prints</th></tr></thead><tbody>${lose}</tbody></table></div>
+    <div class="pr-head"><h1>BOARDFEET</h1><div class="pr-date">Live Market Report \u00b7 ${dateStr} \u00b7 ${printsToday.toLocaleString()} prints today</div></div>
+    <div class="pr-sechead">LUMBER PRICE GUIDE</div>
+    <div class="pr-fob">Unitized Loadings \u00b7 Prices Net, f.o.b. Mill, U.S. Funds, Unless Otherwise Noted \u00b7 Dollars Per Thousand Board Feet \u00b7 Delivered conversions available per subscriber lane profile</div>
+
+    <div class="pr-chgbox"><h3>Lumber Weekly Price Changes</h3>
+      <div class="pr-three">
+        ${chgGroup("#2&Btr", g1)}
+        ${chgGroup("Studs", studRows)}
+        ${chgGroup("Panels ($/MSF)", panRows)}
+      </div>
     </div>
-    <div class="pr-sect"><h2>Regional matrix — 2x4 #2 16' ($/MBF, FOB)</h2>
-      <table class="pr-table"><thead><tr><th>Product</th>${REGIONS.map(r=>`<th>${r}</th>`).join("")}</tr></thead><tbody>${matRows}</tbody></table></div>
-    <div class="pr-sect"><h2>Demand signals</h2>
-      <table class="pr-table"><tbody>
-        <tr><td>2x6 #2 DF Green 16' inquiry volume</td><td class="pr-up">+34% · PNW</td></tr>
-        <tr><td>OSB 7/16" stockout reports</td><td>6 yards · SoCal</td></tr>
-        <tr><td>SYP PT 2x10 RFQ flow</td><td class="pr-up">+18% · Southeast</td></tr>
-        <tr><td>Stud SPF 92-5/8" median lost-bid gap</td><td class="pr-dn">$14 below board</td></tr>
-      </tbody></table></div>
-    <div class="pr-note">BOARDFEET demo — simulated data for product demonstration only. Production reports: prices are volume-weighted aggregates of verified transaction prints; no figure published with fewer than 3 independent contributors; methodology and revision policy at boardfeet.example/methodology. Delivered conversions available per subscriber lane profile.</div>`;
+
+    <div class="pr-sechead" style="font-size:10pt">FRAMING LUMBER \u2014 KILN DRIED &amp; GREEN DIMENSION</div>
+    <div class="pr-two">
+      <div class="pr-sect"><h2>PNW shipping points\u00b9</h2>${kdMatrix("PNW")}</div>
+      <div class="pr-sect"><h2>Southeast shipping points\u00b9</h2>${kdMatrix("Southeast")}</div>
+    </div>
+
+    <div class="pr-two">
+      <div class="pr-sect"><h2>Studs \u2014 PNW</h2>${studMx}</div>
+      <div class="pr-sect"><h2>Western Red Cedar \u2014 Coast mills</h2>${cedarMx}</div>
+    </div>
+
+    <div class="pr-sect"><h2>Structural panels</h2>${panMx}</div>
+
+    <div class="pr-sect"><h2>Market commentary</h2><div class="pr-comment">${commentary}</div></div>
+
+    <div class="pr-note">1\u2013Prices are volume-weighted aggregates of verified transaction prints from the named region's shipping points; averaged across random lengths 8\u201320'. 2\u2013Applicable duties included where noted. No figure published with fewer than 3 independent contributors; thin items shown as \u2014. NC = no change, confirmed by contributor prints. This edition covers 2 of 7 regions; the full print edition runs 8 pages weekly with all regions, MSR, treated, and engineered sections. BOARDFEET demo \u2014 simulated data for product demonstration only. Methodology: boardfeet.example/methodology/v1.</div>`;
 }
 document.getElementById("printBtn").addEventListener("click", ()=>{ buildPrintReport(); window.print(); });
 window.addEventListener("beforeprint", buildPrintReport);
