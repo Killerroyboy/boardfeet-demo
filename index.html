@@ -172,6 +172,15 @@ select:focus{outline:2px solid var(--crayon);outline-offset:-1px}
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--spruce-deep);color:#fff;padding:12px 18px;border-radius:8px;font-size:13.5px;z-index:80;opacity:0;transition:all .25s;pointer-events:none;border-left:4px solid var(--crayon);max-width:92vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast b{color:#FFC58A}
+.toast.receipt{max-width:min(420px,92vw);padding:14px 16px}
+.toast.receipt .rc-h{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--crayon);text-transform:uppercase;margin-bottom:6px}
+.toast.receipt .rc-li{font-size:12.5px;line-height:1.55;color:#DDE6D8;padding:2px 0}
+.toast.receipt .rc-li b{color:#fff}
+.toast.receipt .rc-up{color:#7FCB9B}.toast.receipt .rc-dn{color:#F0907B}
+.settle-strip{border:1.2px solid #111;padding:6px 10px;margin-bottom:12px;display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;font-size:11.5px}
+.settle-strip .st-lbl{font-family:var(--sans);font-weight:800;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.settle-strip .st-it{font-variant-numeric:tabular-nums;white-space:nowrap}
+.settle-strip .st-it b{font-weight:700}
 
 footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;color:var(--ink-soft);font-family:var(--mono)}
 
@@ -612,6 +621,10 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
         <div class="meth-li"><span class="n">04</span><span><b>Anti-signaling controls.</b> No raw competitor prints visible; aggregation thresholds and time delays on identifiable data, reviewed by antitrust counsel.</span></div>
         <div class="meth-li"><span class="n">05</span><span><b>Published revision policy.</b> Corrections are versioned, timestamped, and announced — never silent.</span></div>
         <div class="meth-li"><span class="n">06</span><span><b>Independent advisory board</b> of named traders, mill economists, and a methodology auditor reviews quarterly.</span></div>
+        <div class="meth-li"><span class="n">07</span><span><b>Anti-circularity rule.</b> Prints priced by index-linked contract formulas are recorded but excluded from assessment — an index that ingests prices set by itself stops measuring the market.</span></div>
+        <div class="meth-li"><span class="n">08</span><span><b>Full print specification.</b> Every print captures basis (FOB/delivered), tally (RL 8/20', 8/16', specified), shipment window, quantity class, duty inclusion, and payment terms — a price without its terms isn't comparable.</span></div>
+        <div class="meth-li"><span class="n">09</span><span><b>Daily settlement.</b> The live board drives trading decisions; one official 3:30 p.m. PT settlement print per day gives contracts and hedges a citable close. Settlements are final — never retroactively changed by late data.</span></div>
+        <div class="meth-li"><span class="n">10</span><span><b>Annual open consultation.</b> Methodology is reviewed yearly with public comment; material changes are announced by pricing notice with a versioned revision history.</span></div>
       </div>
 
     </div>
@@ -675,8 +688,17 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
     <div class="fld"><label for="mPrice">Price</label><input id="mPrice" type="number" inputmode="decimal" placeholder="485.00"></div>
     <div class="fld"><label for="mQty">Quantity</label><input id="mQty" placeholder="e.g. 2 truckloads / 4 MBF"></div>
     <div class="fld"><label for="mZip">Ship-to ZIP</label><input id="mZip" inputmode="numeric" placeholder="97058"></div>
+    <div class="fld" style="display:flex;gap:8px">
+      <div style="flex:1"><label for="mInco">Basis</label><select id="mInco"><option>FOB mill</option><option>Delivered</option></select></div>
+      <div style="flex:1"><label for="mShip">Shipment</label><select id="mShip"><option>Prompt (≤2 wks)</option><option>2–4 wks</option><option>4–6 wks</option></select></div>
+      <div style="flex:1"><label for="mTally">Tally</label><select id="mTally"><option>RL 8/20'</option><option>RL 8/16'</option><option>Specified</option></select></div>
+    </div>
+    <div class="fld" style="display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="mIdx" style="width:auto;margin:0">
+      <label for="mIdx" style="margin:0;text-transform:none;letter-spacing:0;font-weight:600;font-size:12px;color:var(--ink)">Price set by an index-linked contract formula</label>
+    </div>
     <button class="m-submit" id="mGo">Post to the board</button>
-    <p class="m-note">Prints are anonymized and aggregated. Invoice-verified prints carry 2.4× weight · your trust score: 87.</p>
+    <p class="m-note">Prints are anonymized and aggregated. Invoice-verified prints carry 2.4× weight · your trust score: 87. Index-linked prints are recorded but excluded from price assessment to prevent circularity.</p>
   </div>
 </div>
 
@@ -693,7 +715,7 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 
 <div class="toast" id="toast"></div>
 
-<footer>BOARDFEET demo build v8 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+<footer>BOARDFEET demo build v9 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
 
 <script>
 "use strict";
@@ -1124,9 +1146,7 @@ function openDrawer(k){
       const np = k.unit==="$/LF" ? +(k.price+delta/100).toFixed(2) : k.price + delta;
       closeDrawer();
       tickSku(k, true, np);
-      toast(delta===0
-        ? `<b>NC confirmed</b> at ${fmt(k)} — ${k.name}. Confirmation prints raise confidence too.`
-        : `Print posted: <b>${k.name}</b> ${delta>0?"+":""}$${Math.abs(delta)} → ${fmt(k)}. Two taps, done.`);
+      receipt(k, delta===0 ? null : np);
     });
   });
 }
@@ -1166,18 +1186,56 @@ document.getElementById("mGo").addEventListener("click", ()=>{
     const txt = document.getElementById("mSku").value.toLowerCase();
     k = SKUS.find(s=>txt.includes(s.name.toLowerCase())) || pick(SKUS);
   }
+  const idxLinked = document.getElementById("mIdx").checked;
   closeModal();
-  if(!isNaN(priceIn) && priceIn>0) tickSku(k, true, priceIn);
-  else tickSku(k, true, null);
-  toast(`Print posted: <b>${k.name}</b> · ${k.region}. Board updated for ${ri(40,220)} watchers.`);
+  if(idxLinked){
+    toast(`Recorded: <b>${k.name}</b> as an index-linked contract print. It counts toward your contribution streak but is <b>excluded from the price assessment</b> — index-linked prices feeding the index would be circular.`);
+    document.getElementById("mIdx").checked = false;
+    return;
+  }
+  const up = (!isNaN(priceIn) && priceIn>0) ? priceIn : null;
+  tickSku(k, true, up);
+  receipt(k, up);
 });
 
 function toast(html){
   const t = document.getElementById("toast");
+  t.className = "toast show";
   t.innerHTML = html;
-  t.classList.add("show");
   clearTimeout(t._tm);
   t._tm = setTimeout(()=>t.classList.remove("show"), 3400);
+}
+
+// ---------- Contribution receipt: every print pays back instantly ----------
+const SIGNALS_BY_SP = {
+  "SPF":"SPF inquiry volume +12% w/w in your region","DF":"Green Fir order files stretching into next month",
+  "Hem-Fir":"Hem-Fir narrow widths hardest to source this week","SYP":"SYP eastside RFQ flow +18% w/w",
+  "ESLP":"ESLP stud-mill offerings thin this week","WRC":"Cedar decking watchlist adds +41 this week",
+  "OSB":"OSB stockout pings at 6 SoCal yards","Plywood":"Sheathing inquiry steady, supply lean",
+  "LVL":"LVL forward-buy interest 3 wks out","I-Joist":"I-joist quotes firming with framing","Glulam":"Beam inquiries seasonal-strong"
+};
+function receipt(k, userPrice){
+  const t = document.getElementById("toast");
+  const mkt = k.prev; // board level just before this print
+  const lines = [];
+  if(userPrice!=null && Math.abs(userPrice-mkt) > 0.0001){
+    const diff = (userPrice-mkt)/mkt*100;
+    lines.push(diff<=0
+      ? `Your ${fmt(k,userPrice)} is <span class="rc-up">${Math.abs(diff).toFixed(1)}% under the board</span> — strong buy.`
+      : `Your ${fmt(k,userPrice)} is <span class="rc-dn">${diff.toFixed(1)}% over the board</span> — market is at ${fmt(k,mkt)}.`);
+  } else {
+    lines.push(`<b>NC confirmed</b> at ${fmt(k)} — confirmations sharpen the board too.`);
+  }
+  const ch = chgPct(k);
+  lines.push(`This SKU is <span class="${ch>=0?"rc-up":"rc-dn"}">${ch>=0?"up":"down"} ${Math.abs(ch).toFixed(1)}%</span> on the day · ${k.prints} prints.`);
+  lines.push(SIGNALS_BY_SP[k.species] || "Inquiry flow steady on this item.");
+  if(k.prints===12) lines.push(`Your print just moved this SKU to <b>high confidence</b>.`);
+  lines.push(`Trust score 87 · streak +1 · weight 2.4×`);
+  t.className = "toast receipt show";
+  t.innerHTML = `<div class="rc-h">Print posted — here's what you get back</div>` +
+    lines.map(l=>`<div class="rc-li">${l}</div>`).join("");
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>t.classList.remove("show"), 6500);
 }
 
 // esc to close
@@ -1418,6 +1476,10 @@ function reportHtml(){
     <div class="pr-head"><h1>BOARDFEET</h1><div class="pr-date">Live Market Report \u00b7 ${dateStr} \u00b7 ${printsToday.toLocaleString()} prints today</div></div>
     <div class="pr-sechead">LUMBER PRICE GUIDE</div>
     <div class="pr-fob">Unitized Loadings \u00b7 Prices Net, f.o.b. Mill, U.S. Funds, Unless Otherwise Noted \u00b7 Dollars Per Thousand Board Feet \u00b7 Delivered conversions available per subscriber lane profile</div>
+
+    <div class="settle-strip"><span class="st-lbl">Prior Daily Settlement \u00b7 3:30 p.m. PT</span>${
+      COMPS.map(c=>{ const {v}=compVal(c); return `<span class="st-it">${c.lbl.replace(" Composite","")} <b>$${(Math.round(v/ (1+rr(-0.004,0.004)))).toLocaleString()}</b></span>`; }).join("")
+    }<span style="font-style:italic;font-size:10px">\u2014 the citable close for contracts &amp; hedges; live board for trading decisions</span></div>
 
     <div class="pr-chgbox"><h3>Lumber Weekly Price Changes</h3>
       <div class="pr-three">
