@@ -320,6 +320,40 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 .qp button:hover{border-color:var(--crayon);color:#B25A08}
 .qp .qp-nc{background:#F6F6F1}
 
+/* ===== Live sheet (Report tab) ===== */
+.sheet-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.sheet-live{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;color:#B25A08;border:1.5px solid var(--crayon);border-radius:4px;padding:6px 10px;background:#FDF3E7}
+.sheet-live .live-dot{background:var(--crayon)}
+.sheet-upd{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.sheet-print{margin-left:auto;border:1.5px solid var(--spruce);background:#fff;color:var(--spruce);border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700}
+.sheet-print:hover{background:#F0F4F0}
+.sheet{background:#FFFEF9;border:1px solid var(--line);border-radius:4px;padding:26px 28px;box-shadow:0 3px 14px rgba(30,35,28,.09);font-family:Georgia,"Times New Roman",serif;color:#111;overflow-x:auto}
+@media(max-width:680px){.sheet{padding:16px 12px}}
+.sheet .pr-head{border-bottom:3px solid #111;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px}
+.sheet .pr-head h1{font-family:var(--sans);font-size:22px;letter-spacing:.1em;font-weight:800}
+.sheet .pr-head .pr-date{font-size:12px;font-style:italic}
+.sheet .pr-sechead{font-family:var(--sans);font-size:15px;font-weight:800;text-align:center;letter-spacing:.06em;margin:10px 0 2px}
+.sheet .pr-fob{font-size:11px;text-align:center;margin:2px 0 12px;font-style:italic}
+.sheet .pr-chgbox{border:1.4px solid #111;padding:8px 10px;margin-bottom:14px}
+.sheet .pr-chgbox h3{font-family:var(--sans);font-size:12px;margin-bottom:5px;font-weight:800}
+.sheet .pr-three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.sheet .pr-two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.sheet .pr-three,.sheet .pr-two{grid-template-columns:1fr}}
+.sheet .pr-sect{margin-bottom:14px}
+.sheet .pr-sect h2{font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid #888;padding-bottom:3px;margin-bottom:6px;font-weight:800}
+.sheet .pr-mx{width:100%;border-collapse:collapse;font-size:11.5px}
+.sheet .pr-mx th{font-family:var(--sans);font-size:9px;text-transform:uppercase;letter-spacing:.03em;border-bottom:1.4px solid #111;padding:3px 5px;text-align:right;font-weight:800}
+.sheet .pr-mx th:first-child,.sheet .pr-mx td:first-child{text-align:left}
+.sheet .pr-mx td{padding:3.5px 5px;border-bottom:.5px solid #c5c5bb;text-align:right;font-variant-numeric:tabular-nums}
+.sheet .pr-mx .grp td{border-bottom:1.2px solid #111;font-weight:bold;font-family:var(--sans);font-size:10px;padding-top:8px}
+.sheet .pr-comment{font-size:13px;line-height:1.5;column-count:2;column-gap:20px;text-align:justify}
+@media(max-width:680px){.sheet .pr-comment{column-count:1}}
+.sheet .pr-note{font-size:10px;color:#444;margin-top:14px;border-top:1px solid #888;padding-top:6px;line-height:1.5}
+.sheet td.cell-up{animation:cellUp 1.4s}
+.sheet td.cell-dn{animation:cellDn 1.4s}
+@keyframes cellUp{0%{background:var(--up-bg)}100%{background:transparent}}
+@keyframes cellDn{0%{background:var(--down-bg)}100%{background:transparent}}
+
 #printReport{display:none}
 @media print{
   body > *:not(#printReport){display:none !important}
@@ -372,6 +406,7 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
   <button class="tab on" data-view="board">Market Board</button>
   <button class="tab" data-view="buyer">Buyer View</button>
   <button class="tab" data-view="seller">Seller View</button>
+  <button class="tab" data-view="report">Report</button>
   <button class="tab" data-view="drivers">Drivers</button>
   <button class="tab" data-view="platform">Platform</button>
   <button class="print-btn" id="printBtn">
@@ -451,6 +486,16 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
       <p class="sub">Leading indicators from buyer-side activity. Inquiry spikes typically lead price moves by 2–5 days.</p>
       <div class="signals" id="sellerSignals" style="margin:0"></div>
     </div>
+  </section>
+
+  <!-- ============ REPORT PANEL (live sheet) ============ -->
+  <section class="panel" id="panel-report">
+    <div class="sheet-bar">
+      <span class="sheet-live"><span class="live-dot"></span>LIVE SHEET</span>
+      <span class="sheet-upd" id="sheetUpd">updating…</span>
+      <button class="sheet-print" id="sheetPrint">Print this report</button>
+    </div>
+    <div class="sheet" id="liveSheet"></div>
   </section>
 
   <!-- ============ DRIVERS PANEL ============ -->
@@ -648,7 +693,7 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 
 <div class="toast" id="toast"></div>
 
-<footer>BOARDFEET demo build v7 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+<footer>BOARDFEET demo build v8 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
 
 <script>
 "use strict";
@@ -1146,6 +1191,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on", x===t));
     const v = t.dataset.view;
     document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on", p.id==="panel-"+v));
+    if(v==="report") renderLiveSheet();
   });
 });
 
@@ -1295,7 +1341,7 @@ function avgP(dim, grade, sp, region){
   return n? {p:Math.round(s/n), c:Math.round((s-b)/n/5)*5} : null;
 }
 function chgFmt(c){ return c===0?"NC":(c>0?"+":"\u2212")+Math.abs(c); }
-function buildPrintReport(){
+function reportHtml(){
   const d = new Date();
   const dateStr = d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
   const SP = [["SPF KD","SPF"],["DF KD","DF KD"],["DF Green","DF Grn"],["Hem-Fir KD","Hem-Fir"],["SYP KD","SYP"],["ESLP KD","ESLP"]];
@@ -1368,7 +1414,7 @@ function buildPrintReport(){
     `Field inventories remained lean; buyers reported difficulty shaking discounts loose on narrow widths. `+
     `${printsToday.toLocaleString()} prints were posted to the board today across ${SKUS.length.toLocaleString()} tracked items.`;
 
-  document.getElementById("printReport").innerHTML = `
+  return `
     <div class="pr-head"><h1>BOARDFEET</h1><div class="pr-date">Live Market Report \u00b7 ${dateStr} \u00b7 ${printsToday.toLocaleString()} prints today</div></div>
     <div class="pr-sechead">LUMBER PRICE GUIDE</div>
     <div class="pr-fob">Unitized Loadings \u00b7 Prices Net, f.o.b. Mill, U.S. Funds, Unless Otherwise Noted \u00b7 Dollars Per Thousand Board Feet \u00b7 Delivered conversions available per subscriber lane profile</div>
@@ -1398,6 +1444,20 @@ function buildPrintReport(){
 
     <div class="pr-note">1\u2013Prices are volume-weighted aggregates of verified transaction prints from the named region's shipping points; averaged across random lengths 8\u201320'. 2\u2013Applicable duties included where noted. No figure published with fewer than 3 independent contributors; thin items shown as \u2014. NC = no change, confirmed by contributor prints. This edition covers 2 of 7 regions; the full print edition runs 8 pages weekly with all regions, MSR, treated, and engineered sections. BOARDFEET demo \u2014 simulated data for product demonstration only. Methodology: boardfeet.example/methodology/v1.</div>`;
 }
+function buildPrintReport(){ document.getElementById("printReport").innerHTML = reportHtml(); }
+
+// ---------- Live sheet (Report tab) ----------
+let sheetLastUpd = 0;
+function renderLiveSheet(){
+  document.getElementById("liveSheet").innerHTML = reportHtml();
+  sheetLastUpd = Date.now();
+  document.getElementById("sheetUpd").textContent = "updated " + new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",second:"2-digit"});
+}
+setInterval(()=>{
+  const open = document.getElementById("panel-report").classList.contains("on");
+  if(open && Date.now()-sheetLastUpd > 5000) renderLiveSheet();
+}, 5200);
+document.getElementById("sheetPrint").addEventListener("click", ()=>{ buildPrintReport(); window.print(); });
 document.getElementById("printBtn").addEventListener("click", ()=>{ buildPrintReport(); window.print(); });
 window.addEventListener("beforeprint", buildPrintReport);
 
