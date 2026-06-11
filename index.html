@@ -328,6 +328,14 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 .qp button{font-family:var(--mono);font-size:13px;font-weight:800;padding:9px 0;border-radius:6px;border:1.5px solid var(--line);background:#fff;color:var(--ink);flex:1;min-width:52px}
 .qp button:hover{border-color:var(--crayon);color:#B25A08}
 .qp .qp-nc{background:#F6F6F1}
+/* my sheet */
+.mys-chips{display:inline-flex;gap:4px}
+.mys-chips button{font-family:var(--mono);font-size:10px;font-weight:800;padding:3px 7px;border-radius:4px;border:1px solid #bbb;background:#fff;color:#333;cursor:pointer}
+.mys-chips button:hover{border-color:var(--crayon);color:#B25A08}
+.mys-x{border:none;background:none;color:#999;font-size:12px;cursor:pointer;padding:2px 4px}
+.mys-x:hover{color:var(--down)}
+.mys-moved{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;padding:2px 6px;border-radius:3px;background:#FBEAD6;color:#B25A08;text-transform:uppercase;margin-left:6px}
+.mys-banner{font-family:var(--sans);font-size:11.5px;color:#444;margin-bottom:8px;font-style:italic}
 
 /* ===== Live sheet (Report tab) ===== */
 .sheet-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
@@ -412,7 +420,8 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 <div class="tape-wrap"><div class="tape" id="tape"></div></div>
 
 <nav class="tabs" aria-label="Views">
-  <button class="tab on" data-view="board">Market Board</button>
+  <button class="tab on" data-view="mysheet">My Sheet</button>
+  <button class="tab" data-view="board">Market Board</button>
   <button class="tab" data-view="buyer">Buyer View</button>
   <button class="tab" data-view="seller">Seller View</button>
   <button class="tab" data-view="report">Report</button>
@@ -526,6 +535,11 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
         <div class="drv bear"><div class="k">Field inventories</div><div class="v">Lean</div><div class="d">Dealers hand-to-mouth; restocking cycle would amplify any rally</div><span class="imp imp-bull">Coiled spring</span></div>
         <div class="drv watch"><div class="k">Wildfire / beetle</div><div class="v">Elevated</div><div class="d">BC interior fire outlook above normal; watch July–Sept harvest access</div><span class="imp imp-watch">Supply risk</span></div>
       </div>
+      <table class="fc-table" style="margin-top:10px"><thead><tr><th>Policy watch</th><th>Status</th><th>Date</th></tr></thead><tbody>
+        <tr><td style="text-align:left;font-family:var(--sans);font-weight:600">Commerce proposal: combined AD/CVD to 24.8% (from 35.2%)</td><td style="font-family:var(--sans)">Final determination pending</td><td>Aug 2026</td></tr>
+        <tr><td style="text-align:left;font-family:var(--sans);font-weight:600">Section 232 lumber tariff (+10%) review</td><td style="font-family:var(--sans)">In effect; keeps effective rate ~35%</td><td>—</td></tr>
+        <tr><td style="text-align:left;font-family:var(--sans);font-weight:600">AD/CVD administrative review period (POR 2025)</td><td style="font-family:var(--sans)">Underway</td><td>Q4 2026</td></tr>
+      </tbody></table>
     </div>
 
     <div class="tool">
@@ -630,8 +644,26 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
     </div>
   </section>
 
+  <!-- ============ MY SHEET PANEL ============ -->
+  <section class="panel on" id="panel-mysheet">
+    <div class="sheet-bar">
+      <span class="sheet-live"><span class="live-dot"></span>YOUR SHEET</span>
+      <span class="sheet-upd" id="mysUpd"></span>
+      <button class="sheet-print" id="mysPrint">Print my sheet</button>
+    </div>
+    <div class="sheet" id="mySheet"></div>
+    <div class="tool" style="margin-top:12px">
+      <h2>Add an item to your sheet</h2>
+      <p class="sub">Your sheet is your home screen, your 7am digest, your alerts, and your end-of-day close list — all one selection. Star items from any SKU drawer, or add a line here.</p>
+      <div class="tool-row">
+        <select id="mysAdd" style="flex:1;min-width:220px"></select>
+        <button class="tool-go" id="mysAddGo">Add to my sheet</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ MARKET BOARD ============ -->
-  <section class="panel on" id="panel-board">
+  <section class="panel" id="panel-board">
   <section class="composites" id="composites" aria-label="Market composites"></section>
 
   <section class="signals" id="signals" aria-label="Demand signals"></section>
@@ -715,7 +747,7 @@ footer{max-width:1280px;margin:0 auto;padding:18px 14px 28px;font-size:11px;colo
 
 <div class="toast" id="toast"></div>
 
-<footer>BOARDFEET demo build v10 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
+<footer>BOARDFEET demo build v11 · Simulated market data for product demonstration only — not actual transaction prices. All prints anonymized &amp; aggregated; no price shown with fewer than 3 contributors in production.</footer>
 
 <script>
 "use strict";
@@ -1181,6 +1213,7 @@ function openDrawer(k){
         <button data-d="-10">−10</button>
       </div>
     </div>
+    <button class="share-btn" id="dwStar" style="margin-bottom:8px">☆ Add to My Sheet</button>
     <button class="share-btn" id="dwShare">Share price card 📤</button>
     <button class="dw-cta" id="dwSubmit">Submit a print for this SKU</button>`;
   drawer.classList.add("open");
@@ -1188,6 +1221,14 @@ function openDrawer(k){
   document.getElementById("dwX").addEventListener("click", closeDrawer);
   document.getElementById("dwSubmit").addEventListener("click", ()=>{ closeDrawer(); openModal(k); });
   document.getElementById("dwShare").addEventListener("click", ()=>openShareCard(k));
+  document.getElementById("dwStar").addEventListener("click", ()=>{
+    const pre = k.name.replace(/ \d+'\s*$/,"").replace(/ \d+-\d\/\d+"\s*$/,"").trim();
+    const label = `${pre} \u2014 ${k.region}`;
+    if(!MYITEMS.some(it=>it.label===label)){
+      MYITEMS.push({label, pre, rg:k.region});
+      toast(`Starred: <b>${label}</b> added to My Sheet — your digest and alerts now cover it.`);
+    } else toast(`<b>${label}</b> is already on your sheet.`);
+  });
   drawer.querySelectorAll(".qp button").forEach(b=>{
     b.addEventListener("click", ()=>{
       const delta = parseFloat(b.dataset.d);
@@ -1298,6 +1339,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     const v = t.dataset.view;
     document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on", p.id==="panel-"+v));
     if(v==="report") renderLiveSheet();
+    if(v==="mysheet") renderMySheet();
   });
 });
 
@@ -1828,6 +1870,103 @@ document.getElementById("hgGo").addEventListener("click", ()=>{
   Selling <b>${contracts} LBR contract${contracts>1?"s":""}</b> (each = 27,500 bf, one truckload) offsets that move nearly 1-for-1 — the futures gain covers the cash loss.<br>
   <span style="color:var(--ink-soft);font-size:11px">Illustrative only — basis risk between your SKUs and the contract's 2x4 #2&Btr spec means the hedge is approximate, not perfect. Not trading advice.</span>`;
 });
+
+// ---------- My Sheet (personalized price guide; seeded from the marked-up sheet persona) ----------
+// Lines are sheet items (item x shipping point, averaged across lengths) — not single SKUs.
+let MYITEMS = [
+  {label:"2x4 Std&Btr DF Green \u2014 Portland", pre:"2x4 Std&Btr DF Green", rg:"PNW"},
+  {label:"2x4 #2&Btr DF Green \u2014 Portland",  pre:"2x4 #2 DF Green",     rg:"PNW"},
+  {label:"2x6 #2&Btr DF Green \u2014 Portland",  pre:"2x6 #2 DF Green",     rg:"PNW"},
+  {label:"2x8 #2&Btr DF Green \u2014 Portland",  pre:"2x8 #2 DF Green",     rg:"PNW"},
+  {label:"2x10 #2&Btr DF Green \u2014 Portland", pre:"2x10 #2 DF Green",    rg:"PNW"},
+  {label:"2x12 #2&Btr DF Green \u2014 Portland", pre:"2x12 #2 DF Green",    rg:"PNW"},
+  {label:"4x4 #2&Btr DF Green Timbers \u2014 Portland",  pre:"4x4 #2&Btr DF Green",  rg:"PNW"},
+  {label:"4x12 #2&Btr DF Green Timbers \u2014 Portland", pre:"4x12 #2&Btr DF Green", rg:"PNW"},
+  {label:"6x6 #1&Btr DF Rough 12/24' \u2014 Portland",   pre:"6x6 #1&Btr DF Green Rough", rg:"PNW"},
+  {label:"1x4 Std&Btr WRC Boards \u2014 Coast",  pre:"1x4 Std&Btr WRC Boards", rg:"PNW"},
+  {label:"1x8 No-Hole WRC Boards \u2014 Coast",  pre:"1x8 No-Hole WRC Boards", rg:"PNW"},
+  {label:"1x6 KD T&G WRC \u2014 Coast",          pre:"1x6 KD T&G",             rg:"PNW"},
+  {label:"2x4 #2&Btr Hem-Fir KD \u2014 Coast",   pre:"2x4 #2 Hem-Fir KD",      rg:"PNW"},
+  {label:"2x4 #2&Btr SPF KD \u2014 Spokane",     pre:"2x4 #2 SPF KD",          rg:"Inland"},
+  {label:"5/4x6 R.E.D. Std SYP \u2014 Southeast",pre:"5/4x6 R.E.D. Standard",  rg:"Southeast"}
+];
+let mysBaseline = null; // snapshot for "since you opened"
+
+function lineVal(it){ return avgName(it.pre, it.rg); }
+function lineRepSku(it){
+  const f = SKUS.filter(k=>k.region===it.rg && k.name.startsWith(it.pre));
+  return f.find(k=>k.name.endsWith("16'")) || f[0] || null;
+}
+function renderMySheet(){
+  const w1L = wkLabel(14), w2L = wkLabel(7);
+  if(!mysBaseline){ mysBaseline = {}; MYITEMS.forEach((it,i)=>{ const a=lineVal(it); if(a) mysBaseline[it.label]=a.p; }); }
+  let moved = 0;
+  const rows = MYITEMS.map((it,i)=>{
+    const a = lineVal(it);
+    if(!a) return "";
+    const wk2 = a.p - a.c, wk1 = wk2 - Math.round(rr(-2,2))*5, chg3 = a.p - wk1;
+    const movedNow = mysBaseline[it.label]!=null && mysBaseline[it.label]!==a.p;
+    if(movedNow) moved++;
+    return `<tr><td>${it.label}${movedNow?'<span class="mys-moved">moved</span>':''}</td>
+      <td>${wk1}</td><td>${wk2}</td><td><b>${a.p.toLocaleString()}</b></td>
+      <td>${chgFmt(a.c)}</td><td>${chgFmt(chg3)}</td>
+      <td><span class="mys-chips">
+        <button data-i="${i}" data-d="0">NC</button>
+        <button data-i="${i}" data-d="5">+5</button>
+        <button data-i="${i}" data-d="-5">\u22125</button>
+      </span></td>
+      <td><button class="mys-x" data-x="${i}" title="Remove">\u2715</button></td></tr>`;
+  }).join("");
+  const d = new Date();
+  document.getElementById("mySheet").innerHTML = `
+    <div class="pr-head"><h1>BOARDFEET</h1><div class="pr-date">My Sheet \u00b7 ${d.toLocaleDateString("en-US",{month:"long",day:"numeric"})} \u00b7 ${MYITEMS.length} items</div></div>
+    <div class="mys-banner">${moved>0?`${moved} of your items moved since you opened this sheet.`:"Your items, your shipping points \u2014 the whole market, reduced to what you trade. Tap NC / +5 / \u22125 to post a print without leaving the row."}</div>
+    <table class="pr-mx"><thead><tr><th>Item \u00b7 Shipping point</th><th>${w1L}</th><th>${w2L}</th><th>Now</th><th>Chg</th><th>Chg 3 Wks</th><th>Mark it</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    <div style="font-size:10px;color:#444;margin-top:8px;font-style:italic">This selection drives your 7am digest, your alerts, and your end-of-day close list. Prices averaged across random lengths at the shipping point indicated.</div>`;
+  document.getElementById("mysUpd").textContent = "updated " + d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",second:"2-digit"});
+  // wire chips + removes
+  document.getElementById("mySheet").querySelectorAll(".mys-chips button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const it = MYITEMS[+b.dataset.i], delta = parseFloat(b.dataset.d);
+      const k = lineRepSku(it); if(!k) return;
+      const np = delta===0 ? null : k.price + delta;
+      tickSku(k, true, np===null ? k.price : np);
+      receipt(k, np);
+      renderMySheet();
+    });
+  });
+  document.getElementById("mySheet").querySelectorAll(".mys-x").forEach(b=>{
+    b.addEventListener("click", ()=>{ MYITEMS.splice(+b.dataset.x,1); renderMySheet(); });
+  });
+}
+// add-item select: curated sheet lines across categories/regions
+(function(){
+  const opts = [];
+  for(const sp of [["SPF KD","SPF"],["DF KD","DF KD"],["DF Green","DF Green"],["Hem-Fir KD","Hem-Fir"],["SYP KD","SYP"]])
+    for(const dim of ["2x4","2x6","2x8","2x10","2x12"])
+      for(const rg of REGIONS)
+        opts.push({label:`${dim} #2&Btr ${sp[1]} \u2014 ${rg}`, pre:`${dim} #2 ${sp[0]}`, rg});
+  for(const sz of ["4x4","4x6","4x8","4x10","4x12"]) for(const rg of ["PNW","SoCal"])
+    opts.push({label:`${sz} #2&Btr DF Green Timbers \u2014 ${rg}`, pre:`${sz} #2&Btr DF Green`, rg});
+  for(const nm of ["OSB 7/16\"","CDX Plywood 1/2\""]) for(const rg of REGIONS)
+    opts.push({label:`${nm} \u2014 ${rg}`, pre:nm, rg});
+  const sel = document.getElementById("mysAdd");
+  sel.innerHTML = opts.map((o,i)=>`<option value="${i}">${o.label}</option>`).join("");
+  sel._opts = opts;
+})();
+document.getElementById("mysAddGo").addEventListener("click", ()=>{
+  const sel = document.getElementById("mysAdd");
+  const o = sel._opts[+sel.value];
+  if(o && !MYITEMS.some(it=>it.label===o.label)){ MYITEMS.push({...o}); renderMySheet(); toast(`Added <b>${o.label}</b> to your sheet \u2014 it's now in your digest and alerts too.`); }
+});
+document.getElementById("mysPrint").addEventListener("click", ()=>{
+  document.getElementById("printReport").innerHTML = document.getElementById("mySheet").innerHTML;
+  window.print();
+});
+setInterval(()=>{
+  if(document.getElementById("panel-mysheet").classList.contains("on")) renderMySheet();
+}, 7000);
 
 // ---------- Boot ----------
 populateFilters();
